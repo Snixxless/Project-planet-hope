@@ -1,0 +1,131 @@
+import { Happiness } from "../utils/enums";
+import { Saturation } from "../utils/enums";
+
+export default class Citizen{
+    
+    age             : number = 0;   // the age
+    mature_time     : number = 12;  // Being an adult is cool, you can do all the adult stuff, alcohol, taxes, overtime, existential anxiety, alcohol
+    grandpa_time    : number = 60;  // from this time we see him/her as a pensionier, have fun feeding the pigeons.
+    life_stage      : number = 0;   // 0-2 | 0 = kid, 1 = adult, 2 = grandpa
+
+    depression      : number = 0;   // 0-100
+    happiness       : number = 0;   // 50;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
+    happiness_state : number = 0;   // 0 verry unhappy, 1 unhappy, 2 normal, 3 happy, 4 verry happy
+
+    hunger          : number = 15;  // 5-25 how much the citizen will eat
+    saturation      : number = 3;   // 0 verry hungry, 1 hungry, 3 normal ,4 saturated, 5 verry saturated
+
+    work_power      : number = 5;   // 1-50 
+    
+    mortality_rate  : number = 0.05;// it is what it says, verry brutal. RICE RICE RICE
+    
+
+
+    constructor(){
+
+    }
+    /**
+     * checks if the citizen will die, nice
+     * @returns 
+     */
+    checkDeath(): boolean{
+    //    if (this.lifeStage > 0){                                                  // checks if person is Mature enough to die
+            let death_probability = (this.mortality_rate * this.age) + (this.depression / 5);   // calculate the min value for the deathdice
+            let rate = Math.floor(Math.random() * 100);                             // calculate the death rate
+            //console.log(deathProbability)
+            if(rate < death_probability){ // if the rate is lower than the "deathProbility" then the function is true
+                return true;
+            }
+    //    }
+        return false;
+    }
+    /**
+     * let the Citizen grow and change the lifestate
+     */
+    grow(): void{
+        this.age++;
+        switch(this.age){
+            case this.mature_time:
+                this.life_stage = 1;  
+                this.setHunger(5);              // makes him a big boy, girl, LGTV+ Ultra HD+
+                //this.hunger += 5;                   // sets the hunger to 20
+                this.setWorkPower(35);
+                //this.work_power = 40;              // sets the workpower to 40
+                this.mortality_rate = 0.4;          // sets the mortality_rate to 0.5 because adult life is more dangerous
+                this.setDepression(5);              // because nobody know how to handle the hornyness
+                break;
+            case(this.grandpa_time):
+                this.life_stage = 2;                 // you did it you are now a oldtimer
+                this.setHunger(-2);
+                //this.hunger += -2;                   // sets the hunger to 20 | yeah less work less hunger
+                this.setWorkPower(-10);
+                //this.work_power = 30;                // sets the workpower to 40 | basacly you are now a pensonier, but you love your work. So you are still helping out, nice.
+                this.mortality_rate = 0.8;           // being old have some benefits, but getting more sick isnt one of them.
+                break;
+        }
+    } 
+
+// - - - - - - - - - - Set values - - - - - - - - - -
+    setDepression(num: number): void{
+        if(0 < num || num < 100){       // 
+            this.depression += num;     // adds depression from given "num"
+        }
+    }
+
+    setHunger(num: number): void{
+        if(5 < num || num < 25){       // 
+            this.hunger += num;        // adds hunger from given "num"
+        }
+    }
+
+    setSaturation(num: number){
+        if(0 < num || num < 4){
+            this.saturation += num;
+        }
+    }
+
+    setWorkPower(num: number): void{
+        if(1 < num || num < 50){       // 
+            this.work_power += num;    // adds workPower from given "num"
+        }
+    }
+
+    setHappiness(num: number): void{
+        if(0 < num || num < 100){       // 
+            this.happiness += num;      // adds workPower from given "num"
+            this.setHappinessState();
+        }
+        //console.log(this.happiness_state)
+    }
+
+    setHappinessState(){
+        if (this.happiness < 0 || this.happiness < 15 ){
+            this.happiness_state = Happiness.verry_Unhappy;
+        } else if (this.happiness < 15 || this.happiness < 39){
+            this.happiness_state = Happiness.unhappy;
+        } else if (this.happiness < 40 || this.happiness < 59){
+            this.happiness_state = Happiness.normal;
+        } else if (this.happiness < 60 || this.happiness < 79){
+            this.happiness_state = Happiness.happy;
+        } else if (this.happiness < 80 || this.happiness < 100){
+            this.happiness_state= Happiness.verry_Happy;
+        }
+    }
+
+// - - - - - - - - - - Send the value back - - - - - - - - - -
+    getDepression(){
+        return(this.depression);
+    }
+    getAge(){
+        return(this.age);
+    }
+    getWorkPower(){
+        return(this.work_power);
+    }
+    getHunger(){
+        return(this.hunger);
+    }
+    getHappiness(){
+        return(this.happiness);
+    }
+}
