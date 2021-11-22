@@ -24,5 +24,9 @@ enum Saturation{
     saturated,
     verry_saturated
 }
+enum Gender{
+    female,
+    male
+}
 
-export {Factions, BuildingType, Happiness, Saturation}
+export {Factions, BuildingType, Happiness, Saturation, Gender}
