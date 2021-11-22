@@ -72,8 +72,8 @@ export default class GameManager{
         this.citizenManager.createCitizen(50,this.citizen);
         console.log(this.citizen);
 
-        this.citizenManager.makeAllOld(this.citizen);
-        this.citizenManager.makeAllHappy(this.citizen);
+        this.citizenManager.makeAllOld(this.citizen, Math.floor((Math.random() * 22) +7));
+        this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 100)));
         this.citizenManager.refreshStats(this.citizen);
         console.log(this.citizen);
 
@@ -90,10 +90,12 @@ export default class GameManager{
 
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
-        this.citizenManager.checkDeath(this.citizen)
+        this.citizenManager.newYearRoutine(this.citizen);
+        console.log(this.citizen)
         this.showReport();
         this.year++
         this.infobar.setYear(this.year);
+
     }
 
     updateInfoBarAll(){

@@ -1,19 +1,21 @@
 import { Happiness } from "../utils/enums";
-import { Saturation } from "../utils/enums";
+import { Gender } from "../utils/enums";
 
 export default class Citizen{
     
+    gender          : Gender = Math.floor(Math.random() * 2); // 0 female 1 male, yes this game only have to genders, im sorry its about having babys not about feelings. 
     age             : number = 0;   // the age
     mature_time     : number = 12;  // Being an adult is cool, you can do all the adult stuff, alcohol, taxes, overtime, existential anxiety, alcohol
     grandpa_time    : number = 60;  // from this time we see him/her as a pensionier, have fun feeding the pigeons.
     life_stage      : number = 0;   // 0-2 | 0 = kid, 1 = adult, 2 = grandpa
 
     depression      : number = 0;   // 0-100
-    happiness       : number = 0;   // 50;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
+    happiness       : number = 0;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
     happiness_state : number = 0;   // 0 verry unhappy, 1 unhappy, 2 normal, 3 happy, 4 verry happy
+    isHorny         : boolean = false; // if true, they can have bunga time and make new Workpower, ehmmm i mean citizens.
 
     hunger          : number = 15;  // 5-25 how much the citizen will eat
-    saturation      : number = 3;   // 0 verry hungry, 1 hungry, 3 normal ,4 saturated, 5 verry saturated
+    saturation      : number = 3;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
 
     work_power      : number = 5;   // 1-50 
     
@@ -112,6 +114,14 @@ export default class Citizen{
         }
     }
 
+    checkHorny(){
+        if(this.life_stage > 1 || this.happiness_state > 2 || this.saturation > 2 || this.depression < 80){
+        this.isHorny = true;
+        //    console.table({is_horny: this.isHorny})
+        }
+
+    }
+
 // - - - - - - - - - - Send the value back - - - - - - - - - -
     getDepression(){
         return(this.depression);
@@ -127,5 +137,11 @@ export default class Citizen{
     }
     getHappiness(){
         return(this.happiness);
+    }
+    getHorny(){
+        return(this.isHorny);
+    }
+    getGender(){
+        return(this.gender);
     }
 }

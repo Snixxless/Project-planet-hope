@@ -25,7 +25,7 @@ export default class CitizenManager{
             citizens.push(new Citizen);
             this.population ++;
         }
-        this.refreshStats(citizens);
+        //this.refreshStats(citizens);
     }
 
     checkDeath(citizens: Citizen[]){
@@ -39,7 +39,7 @@ export default class CitizenManager{
                 //console.log(this.population);
             }
         })
-        this.refreshStats(citizens);
+        //this.refreshStats(citizens);
     }
 
     refreshStats(citizens: Citizen[]): void{
@@ -61,23 +61,34 @@ export default class CitizenManager{
         })
     }
 
-    makeAllOld(citizens:Citizen[]): void{
+    newYearRoutine(citizens: Citizen[]){
+        this.refreshStats(citizens);
+        this.calHornyState(citizens);
+        this.checkDeath(citizens);
+        this.makeAllHappy(citizens,Math.floor((Math.random() * 100))); // TODO for testing
+        this.makeAllOld(citizens,1);
+        this.refreshStats(citizens);
+
+
+    }
+
+    makeAllOld(citizens:Citizen[], years:number): void{
         citizens.forEach( (citizen) =>{
-            let amount = Math.floor((Math.random() * 25) + 7); // TODO change this later Niklas
+            let amount = years;
             for (let i = 0; i < amount; i++){
                 citizen.grow();
             }
         })
-        this.refreshStats(citizens);
+        //this.refreshStats(citizens);
         //console.log(this.citizen_age_sum);
     }
 
-    makeAllHappy(citizens: Citizen[]): void{
+    makeAllHappy(citizens: Citizen[],  sertonin:number): void{
         citizens.forEach( (citizen) =>{
-            let amount = Math.floor((Math.random() * 100));
+            let amount = sertonin;
             citizen.setHappiness(amount);
         })
-        this.refreshStats(citizens);
+        //this.refreshStats(citizens);
         //console.table({happines: this.citizen_happiness});
        // console.log(this.citizen_happiness);
     }
@@ -150,6 +161,12 @@ export default class CitizenManager{
             this.citizen_hunger_sum += citizen.getHunger();
         })
         //console.log(this.citizen_hunger);
+    }
+
+    calHornyState(citizens: Citizen[]){
+        citizens.forEach((citizen) =>{
+            citizen.checkHorny();
+        })
     }
 
     // - - - - - - - - - - Send the value back - - - - - - - - - -
