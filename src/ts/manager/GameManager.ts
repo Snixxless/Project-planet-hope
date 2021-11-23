@@ -68,8 +68,9 @@ export default class GameManager{
             Hier alle nötigen werte für das Spiel intialisieren.
         */
         this.credits = 90000;
+        this.food_amount = 5000;
 
-        this.citizenManager.createCitizen(50,this.citizen);
+        this.citizenManager.createCitizen(100,this.citizen);
         console.log(this.citizen);
 
         this.citizenManager.makeAllOld(this.citizen, Math.floor((Math.random() * 22) +7));
@@ -84,7 +85,21 @@ export default class GameManager{
         this.infobar.draw();
         this.infobar.setActive();
         this.displayChooseFaction();
-        this.updateInfoBarAll();
+
+        this.infobar.update({
+            credits : this.credits,
+            food    : {
+                amount  : this.food_amount, 
+                maximum : null},
+            land    : {
+                amount  : this.land_amount, 
+                maximum : this.free_land},
+            citizen : {
+                amount  : this.citizenManager.population,
+                maximum : null},
+            year    : this.year,
+        })
+        //this.updateInfoBarAll();
         
     }
 
@@ -94,14 +109,20 @@ export default class GameManager{
         console.log(this.citizen)
         this.showReport();
         this.year++
-        this.infobar.setYear(this.year);
+        this.infobar.update({
+            credits: this.credits,
+            food:{amount: this.food_amount, maximum: null},
+            land:{amount: this.land_amount, maximum: this.free_land},
+            citizen:{amount: this.citizenManager.population,maximum: null},
+            year: this.year,
+        })
 
     }
 
     updateInfoBarAll(){
-        this.infobar.setCitizens({amount: this.citizenManager.population, maximum: null}); // TODO ahhh how do the I resoucce work
-        this.infobar.setFood({amount: 0,maximum: 100});
-        this.infobar.setLand({amount: 0,maximum: 100});
+        this.infobar.setCitizens({amount: this.citizenManager.population, maximum: null});
+        this.infobar.setFood({amount: null,maximum: null});
+        this.infobar.setLand({amount: null,maximum: null});
         this.infobar.setCredits(this.credits);
         this.infobar.setYear(this.year);
 
@@ -324,28 +345,48 @@ export default class GameManager{
     /**
      * Shows the DISTRIBUTE FOOD MENU
      */
-    distributeFoodMenu(): void{
+    async distributeFoodMenu(): Promise<void>{
+        await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+' Food planed for this Year');
+
         let input_food: Input = new Input(['w-100'],'distribute-food-amount');
 
-        let button_distribute_add: Button = new Button('add food planned for distribute',['btn', 'btn-primary', 'w-100'],() => {});
-        let button_distribute_reduce: Button = new Button('reduce food planned for distribute',['btn', 'btn-primary', 'w-100'],() => {});
+        let button_distribute_add: Button = new Button('add food planned for distribute',['btn', 'btn-primary', 'w-100'],async () => this.distributFood(input_food.element));
+        //let button_distribute_reduce: Button = new Button('reduce food planned for distribute',['btn', 'btn-primary', 'w-100'],async() => this.distributFood(input_food.element));
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.manageFoodMenu());
 
         let col_1: Col = new Col([],[input_food]);
         let col_2: Col = new Col([],[button_distribute_add]);
-        let col_3: Col = new Col([],[button_distribute_reduce]);
+        //let col_3: Col = new Col([],[button_distribute_reduce]);
         let col_back: Col = new Col([],[button_back]);
 
         let row_1: Row = new Row([],[col_1]);
-        let row_2: Row = new Row([],[col_2,col_3]);
+        let row_2: Row = new Row([],[col_2,/*col_3*/]);
         let row_back: Row = new Row([],[col_back]);
         this.handler.selectAreaHandler.setView([row_1,row_2, row_back]);
+    }
+
+    async distributFood(input: HTMLInputElement){
+        let result = this.foodManager.setDistributedFood(parseInt(input.value), this.food_amount); // TODO Deniz fragen was er bei buyLand() gemacht hat
+        if(result.error){
+            await this.handler.displayHandler.displayText(`I'm sorry commander, but you don't have enough Food to distribiute.`);
+        } else {
+            this.food_amount -= result.amount;
+
+            this.infobar.update({
+                food:{
+                    amount: this.food_amount,
+                    maximum: null} //TODO change maximum later
+
+            })
+
+            this.distributeFoodMenu();
+        }
     }
 
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('#');
+        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'<br>'+(this.citizenManager.citizen_dead_this_year)+' died last year');
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());

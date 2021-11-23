@@ -49,6 +49,7 @@ export default class InfobarManager{
         this.land       = object.land       || this.land;
         this.citizens   = object.citizen    || this.citizens;
         this.year       = object.year       || this.year;
+        this.draw();
     }
 
     draw(){
