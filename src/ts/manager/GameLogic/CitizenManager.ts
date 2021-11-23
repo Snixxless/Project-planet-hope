@@ -16,8 +16,8 @@ export default class CitizenManager{
     citizen_age_sum         : number;
     citizen_age_ave         : number;
 
-    citizen_dead            : number;
-    citizen_dead_this_year  : number;
+    citizen_dead            : number = 0;
+    citizen_dead_this_year  : number = 0;
 
 
     createCitizen(amount: number, citizens: Citizen[]): void{
@@ -64,6 +64,7 @@ export default class CitizenManager{
     newYearRoutine(citizens: Citizen[]){
         this.refreshStats(citizens);
         this.calHornyState(citizens);
+        this.citizen_dead_this_year = 0;
         this.checkDeath(citizens);
         this.makeAllHappy(citizens,Math.floor((Math.random() * 100))); // TODO for testing
         this.makeAllOld(citizens,1);

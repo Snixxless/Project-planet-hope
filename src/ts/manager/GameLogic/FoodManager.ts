@@ -1,3 +1,4 @@
+import GameManager from "../GameManager";
 import CitizenManager from "./CitizenManager";
 
 export default class FoodManager{
@@ -8,6 +9,8 @@ export default class FoodManager{
     
     seeds_planted_on_land   : number;
     planted_land_profit     : number;
+
+    distributed_food :number = 0;
 
     constructor(){
 
@@ -25,5 +28,28 @@ export default class FoodManager{
         this.planted_land_profit = this.seeds_planted_on_land * this.food_profit_rate;
     }
 
+    setDistributedFood(amount: number, food: number): any{
+        if(food !== undefined || food !== null){
+            if(food > amount){
+                food -= amount;
+                return {
+                    amount  : this.getDistributedFood(amount),
+                    cost    : food,
+                    error   : false
+                };
+            }
+        }
+        return {
+            amount  : 0,
+            cost    : 0,
+            error   : true
+        };
+
+    }
+
+    getDistributedFood(amount: number): number{
+        this.distributed_food += amount;
+        return amount;
+    }
 
 }

@@ -33,7 +33,7 @@ export default class Citizen{
     checkDeath(): boolean{
     //    if (this.lifeStage > 0){                                                  // checks if person is Mature enough to die
             let death_probability = (this.mortality_rate * this.age) + (this.depression / 5);   // calculate the min value for the deathdice
-            let rate = Math.floor(Math.random() * 100);                             // calculate the death rate
+            let rate = Math.floor(Math.random() * 150);                             // calculate the death rate
             //console.log(deathProbability)
             if(rate < death_probability){ // if the rate is lower than the "deathProbility" then the function is true
                 return true;
