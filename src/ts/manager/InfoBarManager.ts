@@ -57,19 +57,19 @@ export default class InfobarManager{
         this.element.innerHTML = "";
 
         let creditDisplay = new Col();
-        creditDisplay.element.innerHTML = `<div>€/\$ ${this.credits}</div>`;
+        creditDisplay.element.innerHTML = `<div><img src="./src/img/icons/ed_icon_B.png" class="icon me-4" alt="picture">€/\$ ${this.credits}</div>`;
 
         let foodDisplay = new Col();
-        foodDisplay.element.innerHTML = `<div>FOOD ${this.food.amount}/${this.food.maximum}</div>`;
+        foodDisplay.element.innerHTML = `<div><img src="./src/img/icons/food_icon.png" class="icon me-4" alt="picture">FOOD ${this.food.amount}/${this.food.maximum}</div>`;
 
         let landDisplay = new Col();
-        landDisplay.element.innerHTML = `<div>LAND ${this.land.amount}/${this.land.maximum}</div>`
+        landDisplay.element.innerHTML = `<div><img src="./src/img/icons/land_icon.png" class="icon me-4" alt="picture">LAND ${this.land.amount}/${this.land.maximum}</div>`
 
         let citizenDisplay = new Col();
-        citizenDisplay.element.innerHTML = `<div>CITIZEN ${this.citizens.amount}/${this.citizens.maximum}</div>`;
+        citizenDisplay.element.innerHTML = `<div><img src="./src/img/icons/citizens_icon.png" class="icon me-4" alt="picture">CITIZEN ${this.citizens.amount}/${this.citizens.maximum}</div>`;
 
         let yearDisplay = new Col();
-        yearDisplay.element.innerHTML = `<div>YEAR ${this.year}</div>`;
+        yearDisplay.element.innerHTML = `<div><div><img src="./src/img/icons/year_icon.png" class="icon me-4" alt="picture">YEAR ${this.year}</div>`;
 
         let displayRow = new Row(['g-0'], [creditDisplay, foodDisplay, landDisplay, citizenDisplay, yearDisplay]);
         this.element.append(displayRow.element);

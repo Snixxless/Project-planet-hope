@@ -48,6 +48,7 @@ export default class CitizenManager{
         this.calSumWorkPower(citizens);
         this.calAveDepression(citizens);
         this.calAveHappiness(citizens);
+        /*
         console.table({
             population: this.population,
             //AgeSum: this.citizen_age_sum,
@@ -58,7 +59,7 @@ export default class CitizenManager{
             Depression_Ave: this.citizen_depression_ave,
             //HappinessSum: this.citizen_happiness_sum,
             Happiness_Ave: this.citizen_happiness_ave
-        })
+        })*/
     }
 
     newYearRoutine(citizens: Citizen[]){

@@ -1,11 +1,13 @@
 export default class Building{
 
-    //name:
-    level       : number;
-    buildCost   : number;
-    type        : number;
-    maintenance : number;
-    id          : number;
+    name                : string;
+    level               : number;
+    type                : number;
+    maintenance         : number;
+
+    build_cost_credits  : number;
+    build_cost_land     : number;
+
 
     constructor(){
         

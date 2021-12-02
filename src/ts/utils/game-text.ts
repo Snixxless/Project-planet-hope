@@ -3,7 +3,7 @@ let menu_texts = {
         text: `Choose your Faction you want to play!`
     },
     main_menu: {
-        text:   `Main-Menu Text Placeholder`
+        text:   `Hello Commander we are waiting for you orders.`
     }
 }
 

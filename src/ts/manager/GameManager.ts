@@ -4,6 +4,7 @@ import InfobarManager from "./InfoBarManager";
 import FoodManager from "./GameLogic/FoodManager";
 import LandManager from "./GameLogic/LandManager";
 import CitizenManager from "./GameLogic/CitizenManager";
+import BuildingManager from "./GameLogic/BuildingManager";
 
 import Citizen from "../npc/Citizen";
 
@@ -30,11 +31,14 @@ export default class GameManager{
     // Globals
     player_faction: number = undefined;
     year          : number = 0;
-    credits       : number;
-    land_amount   : number;
-    free_land     : number;
-    food_amount   : number;
+    credits       : number = 0;
+    land_free     : number = 0;
+    land_occupied : number = 0;
+    land_amount   : number = 0;
+    food_amount   : number = 0;
+    food_storage  : number = 0;
     citizen       : Citizen[] = [];
+    appartments   : number = 0;
 
     // Manager
     infobar       : InfobarManager;
@@ -42,6 +46,7 @@ export default class GameManager{
     landManager   : LandManager;
     citizenManager: CitizenManager;
     FinanceManager: FinanceManager;
+    BuildingManager: BuildingManager;
 
     greenhouse: GreenHouse;
     
@@ -54,79 +59,102 @@ export default class GameManager{
         this.landManager                = new LandManager();
         this.citizenManager             = new CitizenManager();
         this.FinanceManager             = new FinanceManager();
+        this.BuildingManager            = new BuildingManager()
 
         this.greenhouse                 = new GreenHouse();
         
         this.FinanceManager.calcGreenhouse(this.greenhouse);
 
         //this.displayChooseFaction();
-        this.initGame();
+        this.displayChooseFaction();
     }
 
-    initGame(){
+    async initGame(){
         /* 
             Hier alle nötigen werte für das Spiel intialisieren.
         */
-        this.credits = 90000;
+        this.year = 1;
+        this.credits = 2500;
         this.food_amount = 5000;
+        this.land_free = 450;
 
         this.citizenManager.createCitizen(100,this.citizen);
-        console.log(this.citizen);
+        //console.log(this.citizen);
 
         this.citizenManager.makeAllOld(this.citizen, Math.floor((Math.random() * 22) +7));
         this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 100)));
         this.citizenManager.refreshStats(this.citizen);
-        console.log(this.citizen);
+        //console.log(this.citizen);
 
         this.citizenManager.checkDeath(this.citizen);
         this.citizenManager.refreshStats(this.citizen);
-        console.log(this.citizen);
+        //console.log(this.citizen);
 
         this.infobar.draw();
         this.infobar.setActive();
-        this.displayChooseFaction();
-
-        this.infobar.update({
-            credits : this.credits,
-            food    : {
-                amount  : this.food_amount, 
-                maximum : null},
-            land    : {
-                amount  : this.land_amount, 
-                maximum : this.free_land},
-            citizen : {
-                amount  : this.citizenManager.population,
-                maximum : null},
-            year    : this.year,
-        })
-        //this.updateInfoBarAll();
+        this.mainMenu();
+        this.updateInfoBarAll();
         
     }
 
+    resetGameData(): void{
+        this.year = 0;
+        this.credits = 0;
+        this.food_amount = 0;
+        this.land_free= 0;
+        this.citizen = [];
+    }
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
         this.citizenManager.newYearRoutine(this.citizen);
+        this.food_amount -= this.citizenManager.getCitizenHungerSum(this.citizen);
+        this.food_amount += this.foodManager.harvestProfit();
+
         console.log(this.citizen)
-        this.showReport();
-        this.year++
-        this.infobar.update({
-            credits: this.credits,
-            food:{amount: this.food_amount, maximum: null},
-            land:{amount: this.land_amount, maximum: this.free_land},
-            citizen:{amount: this.citizenManager.population,maximum: null},
-            year: this.year,
-        })
+        
+        if(this.checkGameOver()){
+            this.showGameOver();
+        } else {
+            this.checkGameOver();
+            this.showReport();
+            this.year++
+            this.citizenManager.citizen_dead_this_year = 0;
+            this.updateInfoBarAll();
+        }
+
 
     }
 
-    updateInfoBarAll(){
-        this.infobar.setCitizens({amount: this.citizenManager.population, maximum: null});
-        this.infobar.setFood({amount: null,maximum: null});
-        this.infobar.setLand({amount: null,maximum: null});
-        this.infobar.setCredits(this.credits);
-        this.infobar.setYear(this.year);
+    checkGameOver(): boolean{
+        if(this.citizen.length < 1 || this.credits < -500){
+            return(true);
+        }
+    }
 
-
+    updateInfoBarAll(): void{
+        this.getFoodStorage();
+        this.getAppartments();
+        this.calLandAmount();
+        this.infobar.update({
+            credits: this.credits,
+            food:{amount: this.food_amount, maximum: this.food_storage},
+            land:{amount: this.land_free, maximum: this.land_amount},
+            citizen:{amount: this.citizenManager.population,maximum: this.appartments},
+            year: this.year,
+        })
+    }
+    getFoodStorage(){
+        this.food_storage = this.BuildingManager.getFoodStorage();
+    }
+    getAppartments(){
+        this.appartments = this.BuildingManager.getAppartments();
+    }
+    getOccupiedLand(): void{
+        this.land_occupied = this.BuildingManager.getLandOccupied();
+    }
+    calLandAmount(): void{
+        this.getOccupiedLand();
+        this.land_amount = this.land_free + this.land_occupied;
     }
 
     // - - - - - - - - - - CHOOSE FACTION MENU - - - - - - - - - -
@@ -134,6 +162,7 @@ export default class GameManager{
      * Shows the CHOOSE FACTION MENU
      */
     async displayChooseFaction(): Promise<void>{
+        this.resetGameData();
         this.clearView();
         await this.handler.displayHandler.displayText(menu_texts.choose_faction.text);
     
@@ -170,7 +199,7 @@ export default class GameManager{
             default:
                 break;           
         }
-        let button_start: Button = new Button('start', ['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
+        let button_start: Button = new Button('start', ['btn', 'btn-primary', 'w-100'], () => this.initGame());
         let button_back: Button = new Button('back', ['btn', 'btn-primary', 'w-100'],() => this.displayChooseFaction());
     
         let col_1: Col = new Col([],[button_start]);
@@ -237,7 +266,7 @@ export default class GameManager{
      * Shows the LAND TRADING MENU
      */
      async landTradeMenu(): Promise<void>{
-
+        await this.handler.displayHandler.displayText('The Price for 1 Claim of Land cost '+this.landManager.price_per_land+' creits');
         let input_land: Input = new Input(['w-100'],'land-trade-amount');
 
         let button_buy: Button = new Button('buy land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
@@ -323,14 +352,16 @@ export default class GameManager{
     /**
      * Shows the PLANT SEEDS MENU
      */
-    plantSeedsMenu(): void {
-        let input_food: Input = new Input(['w-100'],'plant-seed-amount');
+    async plantSeedsMenu(): Promise<void> {
+        await this.handler.displayHandler.displayText('You have '+ this.foodManager.seeds_planted_on_land +' seeds planed for this Year');
 
-        let button_field_add: Button = new Button('add planned seeding',['btn', 'btn-primary', 'w-100'],() => {});
+        let input_seeds: Input = new Input(['w-100'],'plant-seed-amount');
+
+        let button_field_add: Button = new Button('add planned seeding',['btn', 'btn-primary', 'w-100'],() => this.plantSeeds(input_seeds.element));
         let button_field_reduce: Button = new Button('reduce planned seeding',['btn', 'btn-primary', 'w-100'],() => {});
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.manageFoodMenu());
 
-        let col_1: Col = new Col([],[input_food]);
+        let col_1: Col = new Col([],[input_seeds]);
         let col_2: Col = new Col([],[button_field_add]);
         let col_3: Col = new Col([],[button_field_reduce]);
         let col_back: Col = new Col([],[button_back]);
@@ -339,6 +370,24 @@ export default class GameManager{
         let row_2: Row = new Row([],[col_2,col_3]);
         let row_back: Row = new Row([],[col_back]);
         this.handler.selectAreaHandler.setView([row_1,row_2, row_back]);
+    }
+
+    async plantSeeds(input: HTMLInputElement){ // TODO ITS JUST A COPY CHANGE THAT
+        let result = this.foodManager.setSeedsOnLand(parseInt(input.value), this.food_amount);
+        if(result.error){
+            await this.handler.displayHandler.displayText(`I'm sorry commander, but you don't have enough Food to plant.`);
+        } else {
+            this.food_amount -= result.amount;
+
+            this.infobar.update({
+                food:{
+                    amount: this.food_amount,
+                    maximum: null} //TODO change maximum later
+
+            })
+
+            this.plantSeedsMenu();
+        }
     }
 
     // - - - - - - - - - - DISTRIBUTE FOOD MENU - - - - - - - - - -
@@ -366,7 +415,7 @@ export default class GameManager{
     }
 
     async distributFood(input: HTMLInputElement){
-        let result = this.foodManager.setDistributedFood(parseInt(input.value), this.food_amount); // TODO Deniz fragen was er bei buyLand() gemacht hat
+        let result = this.foodManager.setDistributedFood(parseInt(input.value), this.food_amount);
         if(result.error){
             await this.handler.displayHandler.displayText(`I'm sorry commander, but you don't have enough Food to distribiute.`);
         } else {
@@ -386,7 +435,7 @@ export default class GameManager{
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'<br>'+(this.citizenManager.citizen_dead_this_year)+' died last year');
+        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'<br>'+(this.citizenManager.citizen_dead_this_year)+' died last year' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
@@ -402,8 +451,17 @@ export default class GameManager{
     // - - - - - - - - - - GAME OVER MENU - - - - - - - - - -
     async showGameOver(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('#');
+        await this.handler.displayHandler.displayText('Seems your Colony is lost Commander, it have been ' + (this.year)+' wonderfull years with you as our leader');
 
+        let button_highscore: Button = new Button('View Highscore',['btn', 'btn-primary', 'w-100'],() => this.showHighScore());
+        let button_newGame: Button = new Button('New Game',['btn', 'btn-primary', 'w-100'],() => this.displayChooseFaction());
+
+        let col_1: Col = new Col([],[button_highscore]);
+        let col_2: Col = new Col([],[button_newGame]);
+
+        let row_1: Row = new Row([],[col_1]);
+        let row_2: Row = new Row([],[col_2]);
+        this.handler.selectAreaHandler.setView([row_1,row_2]);
     }
 
     // - - - - - - - - - - HIGHSCORE MENU - - - - - - - - - -

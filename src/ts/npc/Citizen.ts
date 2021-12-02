@@ -1,5 +1,6 @@
-import { Happiness } from "../utils/enums";
+import { Happiness, Saturation } from "../utils/enums";
 import { Gender } from "../utils/enums";
+import { LifeStage } from "../utils/enums";
 
 export default class Citizen{
     
@@ -7,15 +8,15 @@ export default class Citizen{
     age             : number = 0;   // the age
     mature_time     : number = 12;  // Being an adult is cool, you can do all the adult stuff, alcohol, taxes, overtime, existential anxiety, alcohol
     grandpa_time    : number = 60;  // from this time we see him/her as a pensionier, have fun feeding the pigeons.
-    life_stage      : number = 0;   // 0-2 | 0 = kid, 1 = adult, 2 = grandpa
+    life_stage      : LifeStage = 0;   // 0-2 | 0 = kid, 1 = adult, 2 = grandpa
 
     depression      : number = 0;   // 0-100
-    happiness       : number = 0;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
+    happiness       : Happiness = 0;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
     happiness_state : number = 0;   // 0 verry unhappy, 1 unhappy, 2 normal, 3 happy, 4 verry happy
     isHorny         : boolean = false; // if true, they can have bunga time and make new Workpower, ehmmm i mean citizens.
 
     hunger          : number = 15;  // 5-25 how much the citizen will eat
-    saturation      : number = 3;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
+    saturation      : Saturation = 3;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
 
     work_power      : number = 5;   // 1-50 
     
@@ -48,7 +49,7 @@ export default class Citizen{
         this.age++;
         switch(this.age){
             case this.mature_time:
-                this.life_stage = 1;  
+                this.life_stage = LifeStage.adult;  
                 this.setHunger(5);              // makes him a big boy, girl, LGTV+ Ultra HD+
                 //this.hunger += 5;                   // sets the hunger to 20
                 this.setWorkPower(35);
@@ -57,7 +58,7 @@ export default class Citizen{
                 this.setDepression(5);              // because nobody know how to handle the hornyness
                 break;
             case(this.grandpa_time):
-                this.life_stage = 2;                 // you did it you are now a oldtimer
+                this.life_stage = LifeStage.grandpa;                 // you did it you are now a oldtimer
                 this.setHunger(-2);
                 //this.hunger += -2;                   // sets the hunger to 20 | yeah less work less hunger
                 this.setWorkPower(-10);
@@ -102,7 +103,7 @@ export default class Citizen{
 
     setHappinessState(){
         if (this.happiness < 0 || this.happiness < 15 ){
-            this.happiness_state = Happiness.verry_Unhappy;
+            this.happiness_state = Happiness.very_unhappy;
         } else if (this.happiness < 15 || this.happiness < 39){
             this.happiness_state = Happiness.unhappy;
         } else if (this.happiness < 40 || this.happiness < 59){
@@ -110,7 +111,7 @@ export default class Citizen{
         } else if (this.happiness < 60 || this.happiness < 79){
             this.happiness_state = Happiness.happy;
         } else if (this.happiness < 80 || this.happiness < 100){
-            this.happiness_state= Happiness.verry_Happy;
+            this.happiness_state= Happiness.very_Happy;
         }
     }
 

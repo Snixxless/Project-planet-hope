@@ -10,23 +10,28 @@ enum BuildingType{
 }
 
 enum Happiness{
-    verry_Unhappy,
+    very_unhappy,
     unhappy,
     normal,
     happy,
-    verry_Happy,
+    very_Happy,
 }
 
 enum Saturation{
-    verry_hungry,
+    very_hungry,
     hungry,
     normal ,
     saturated,
-    verry_saturated
+    very_saturated
 }
 enum Gender{
     female,
     male
 }
+enum LifeStage{
+    kid,
+    adult,
+    grandpa
+}
 
-export {Factions, BuildingType, Happiness, Saturation, Gender}
+export {Factions, BuildingType, Happiness, Saturation, Gender, LifeStage}
