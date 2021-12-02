@@ -1,4 +1,5 @@
 import Citizen from "../../npc/Citizen";
+import { Gender } from "../../utils/enums";
 
 export default class CitizenManager{
 
@@ -40,6 +41,27 @@ export default class CitizenManager{
             }
         })
         //this.refreshStats(citizens);
+    }
+
+    feedCitizen(){
+
+    }
+
+    bornNewCitizen(citizens: Citizen[]){
+        let citizen_W: number = 0;
+        let citizen_M: number = 0;
+        citizens.forEach((citizen) => {
+            if(citizen.getHorny()){
+                if(citizen.gender = Gender.female){
+                    citizen_W ++;
+                } else if(citizen.gender = Gender.male){
+                    citizen_M ++;
+                } else {
+                    console.error('Error Citizen Gender not found')
+                }
+            }
+        });
+        console.log(citizen_M,citizen_W)
     }
 
     refreshStats(citizens: Citizen[]): void{
