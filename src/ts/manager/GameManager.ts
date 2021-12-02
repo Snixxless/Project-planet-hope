@@ -29,7 +29,7 @@ export default class GameManager{
     };
 
     // Globals
-    player_faction: number = undefined;
+    player_faction: Factions = undefined;
     year          : number = 0;
     credits       : number = 0;
     land_free     : number = 0;
@@ -88,12 +88,12 @@ export default class GameManager{
 
         this.citizenManager.checkDeath(this.citizen);
         this.citizenManager.refreshStats(this.citizen);
-        //console.log(this.citizen);
 
         this.infobar.draw();
         this.infobar.setActive();
         this.mainMenu();
         this.updateInfoBarAll();
+        console.log(this.citizen);
         
     }
 
@@ -109,6 +109,8 @@ export default class GameManager{
         this.citizenManager.newYearRoutine(this.citizen);
         this.food_amount -= this.citizenManager.getCitizenHungerSum(this.citizen);
         this.food_amount += this.foodManager.harvestProfit();
+
+        this.citizenManager.bornNewCitizen(this.citizen);
 
         console.log(this.citizen)
         
