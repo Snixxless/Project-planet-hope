@@ -69,20 +69,45 @@ export default class GameManager{
         this.displayChooseFaction();
     }
 
-    async initGame(){
-        /* 
-            Hier alle nötigen werte für das Spiel intialisieren.
-        */
+    /* 
+    Hier alle nötigen werte für das Spiel intialisieren.
+    */
+    async initGame(player_faction: Factions){
         this.year = 1;
-        this.credits = 2500;
-        this.food_amount = 5000;
-        this.land_free = 450;
+        switch (player_faction) {
+            //EU
+            case 0:
+                this.credits = 2500;
+                this.food_amount = 5000;
+                this.land_free = 450;
 
-        this.citizenManager.createCitizen(50,this.citizen); //TODO for testing
-        //console.log(this.citizen);
+                this.citizenManager.createCitizen(50,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
+                this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
+                break;
+            //ATC
+            case 1:
+                this.credits = 3500;
+                this.food_amount = 5000;
+                this.land_free = 450;
 
-        this.citizenManager.makeAllOld(this.citizen, 22); //TODO for testing
-        this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
+                this.citizenManager.createCitizen(50,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
+                this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
+                break;
+            //RL
+            case 2:
+                this.credits = 2000;
+                this.food_amount = 5000;
+                this.land_free = 450;
+
+                this.citizenManager.createCitizen(100,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 18, 40); //TODO for testing
+                this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
+                break;
+            default:
+                break;
+        }
         this.citizenManager.refreshStats(this.citizen);
         //console.log(this.citizen);
 
@@ -177,7 +202,7 @@ export default class GameManager{
         let col_3: Col = new Col([],[button_faction3]);
     
         let row_1: Row = new Row([],[col_1,col_2,col_3]);
-        this.setView([row_1])
+        this.setView([row_1]);
     }
 
     async confirmFaction(faction_name: string): Promise<void>{
@@ -201,7 +226,7 @@ export default class GameManager{
             default:
                 break;           
         }
-        let button_start: Button = new Button('start', ['btn', 'btn-primary', 'w-100'], () => this.initGame());
+        let button_start: Button = new Button('start', ['btn', 'btn-primary', 'w-100'], () => this.initGame(this.player_faction));
         let button_back: Button = new Button('back', ['btn', 'btn-primary', 'w-100'],() => this.displayChooseFaction());
     
         let col_1: Col = new Col([],[button_start]);
@@ -437,7 +462,7 @@ export default class GameManager{
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'<br>'+(this.citizenManager.citizen_dead_this_year)+' died last year ' + 'and '+ (this.citizenManager.citizen_new_this_year) + ' citizens have been born this year' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
+        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'\n'+(this.citizenManager.citizen_dead_this_year)+' died last year ' + 'and '+ (this.citizenManager.citizen_new_this_year) + ' citizens have been born this year' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
