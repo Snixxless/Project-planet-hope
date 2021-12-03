@@ -15,6 +15,7 @@ export default class Citizen{
     happiness_state : number = 0;   // 0 verry unhappy, 1 unhappy, 2 normal, 3 happy, 4 verry happy
     isHorny         : boolean = false; // if true, they can have bunga time and make new Workpower, ehmmm i mean citizens.
 
+
     hunger          : number = 15;  // 5-25 how much the citizen will eat
     saturation      : Saturation = 3;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
 
@@ -72,51 +73,79 @@ export default class Citizen{
     setDepression(num: number): void{
         if(0 < num || num < 100){       // 
             this.depression += num;     // adds depression from given "num"
+            if(this.depression > 100){
+                this.depression = 100;
+            } else if(this.depression < 0){
+                this.depression = 0;
+            }
         }
     }
 
     setHunger(num: number): void{
         if(5 < num || num < 25){       // 
             this.hunger += num;        // adds hunger from given "num"
+            if(this.hunger > 100){
+                this.hunger = 100;
+            } else if(this.hunger < 0){
+                this.hunger = 0;
+            }
         }
     }
-
     setSaturation(num: number){
         if(0 < num || num < 4){
             this.saturation += num;
+            if(this.saturation > 100){
+                this.saturation = 100;
+            } else if(this.saturation < 0){
+                this.saturation = 0;
+            }
         }
+    }
+
+    setSaturationState(){
+
     }
 
     setWorkPower(num: number): void{
         if(1 < num || num < 50){       // 
             this.work_power += num;    // adds workPower from given "num"
+            if(this.work_power > 100){
+                this.work_power = 100;
+            } else if(this.work_power < 0){
+                this.work_power = 0;
+            }
         }
     }
 
     setHappiness(num: number): void{
         if(0 < num || num < 100){       // 
-            this.happiness += num;      // adds workPower from given "num"
+            this.happiness += num;      // adds happiness from given "num"
+            if(this.happiness > 100){
+                this.happiness = 100;
+            } else if(this.happiness < 0){
+                this.happiness = 0;
+            }
             this.setHappinessState();
         }
         //console.log(this.happiness_state)
     }
 
     setHappinessState(){
-        if (this.happiness < 0 || this.happiness < 15 ){
+        if (this.happiness > 0 && this.happiness < 15 ){
             this.happiness_state = Happiness.very_unhappy;
-        } else if (this.happiness < 15 || this.happiness < 39){
+        } else if (this.happiness > 15 && this.happiness < 39){
             this.happiness_state = Happiness.unhappy;
-        } else if (this.happiness < 40 || this.happiness < 59){
+        } else if (this.happiness > 40 && this.happiness < 59){
             this.happiness_state = Happiness.normal;
-        } else if (this.happiness < 60 || this.happiness < 79){
+        } else if (this.happiness > 60 && this.happiness < 79){
             this.happiness_state = Happiness.happy;
-        } else if (this.happiness < 80 || this.happiness < 100){
+        } else if (this.happiness > 80){
             this.happiness_state= Happiness.very_Happy;
         }
     }
 
     checkHorny(){
-        if(this.life_stage > 1 || this.happiness_state > 2 || this.saturation > 2 || this.depression < 80){
+        if(this.life_stage > 0 && this.happiness_state > 0 && this.saturation > 1 && this.depression < 80){
         this.isHorny = true;
         //    console.table({is_horny: this.isHorny})
         }

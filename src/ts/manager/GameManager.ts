@@ -78,15 +78,15 @@ export default class GameManager{
         this.food_amount = 5000;
         this.land_free = 450;
 
-        this.citizenManager.createCitizen(100,this.citizen);
+        this.citizenManager.createCitizen(50,this.citizen); //TODO for testing
         //console.log(this.citizen);
 
-        this.citizenManager.makeAllOld(this.citizen, Math.floor((Math.random() * 22) +7));
-        this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 100)));
+        this.citizenManager.makeAllOld(this.citizen, 22); //TODO for testing
+        this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
         this.citizenManager.refreshStats(this.citizen);
         //console.log(this.citizen);
 
-        this.citizenManager.checkDeath(this.citizen);
+        this.citizenManager.checkDeath(this.citizen); // check if some citizens died during the journey 
         this.citizenManager.refreshStats(this.citizen);
 
         this.infobar.draw();
@@ -117,11 +117,11 @@ export default class GameManager{
         if(this.checkGameOver()){
             this.showGameOver();
         } else {
-            this.checkGameOver();
             this.showReport();
             this.year++
             this.citizenManager.citizen_dead_this_year = 0;
             this.updateInfoBarAll();
+            
         }
 
 
@@ -437,7 +437,7 @@ export default class GameManager{
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'<br>'+(this.citizenManager.citizen_dead_this_year)+' died last year' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
+        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'<br>'+(this.citizenManager.citizen_dead_this_year)+' died last year ' + 'and '+ (this.citizenManager.citizen_new_this_year) + ' citizens have been born this year' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
