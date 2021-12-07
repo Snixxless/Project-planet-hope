@@ -2,10 +2,12 @@ import { IResource, IInfoBarObj } from "../utils/interfaces";
 
 import Col from "../HTML-Handler/Col";
 import Row from "../HTML-Handler/Row";
+import { globals } from "../utils/game-text";
 
 export default class InfobarManager{
 
     element     : HTMLDivElement    = null;
+    player_faction     : number            = null;
     citizens    : IResource         = {amount: null, maximum: null};
     food        : IResource         = {amount: null, maximum: null};
     land        : IResource         = {amount: null, maximum: null};
@@ -16,6 +18,11 @@ export default class InfobarManager{
         this.element = <HTMLDivElement>document.getElementById('status-bar');
         this.setInactive();
     };
+
+    setFaction(faction: number){
+        this.player_faction = faction;
+        this.draw();
+    }
 
     setCitizens(citizens: IResource){
         this.citizens = citizens;
@@ -56,6 +63,9 @@ export default class InfobarManager{
         this.setActive();
         this.element.innerHTML = "";
 
+        let flagDisplay = new Col();
+        flagDisplay.element.innerHTML = `<div style="background: ${globals.flag_color[this.player_faction]}"></div>`;
+
         let creditDisplay = new Col();
         creditDisplay.element.innerHTML = `<div><img src="./src/img/icons/ed_icon_B.png" class="icon me-4" alt="picture">€/\$ ${this.credits}</div>`;
 
@@ -71,7 +81,7 @@ export default class InfobarManager{
         let yearDisplay = new Col();
         yearDisplay.element.innerHTML = `<div><div><img src="./src/img/icons/year_icon.png" class="icon me-4" alt="picture">YEAR ${this.year}</div>`;
 
-        let displayRow = new Row(['g-0'], [creditDisplay, foodDisplay, landDisplay, citizenDisplay, yearDisplay]);
+        let displayRow = new Row(['g-0'], [flagDisplay, creditDisplay, foodDisplay, landDisplay, citizenDisplay, yearDisplay]);
         this.element.append(displayRow.element);
     }
 

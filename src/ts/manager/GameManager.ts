@@ -74,6 +74,7 @@ export default class GameManager{
     */
     async initGame(player_faction: Factions){
         this.year = 1;
+        this.infobar.setFaction(this.player_faction);
         switch (player_faction) {
             //EU
             case 0:
@@ -92,7 +93,7 @@ export default class GameManager{
                 this.land_free = 450;
 
                 this.citizenManager.createCitizen(50,this.citizen);
-                this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
+                this.citizenManager.makeAllOldRandom(this.citizen, 18, 65); //TODO for testing
                 this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
                 break;
             //RL
@@ -108,7 +109,7 @@ export default class GameManager{
             default:
                 break;
         }
-        this.citizenManager.refreshStats(this.citizen);
+        //,this.citizenManager.refreshStats(this.citizen);
         //console.log(this.citizen);
 
         this.citizenManager.checkDeath(this.citizen); // check if some citizens died during the journey 
@@ -226,6 +227,7 @@ export default class GameManager{
             default:
                 break;           
         }
+
         let button_start: Button = new Button('start', ['btn', 'btn-primary', 'w-100'], () => this.initGame(this.player_faction));
         let button_back: Button = new Button('back', ['btn', 'btn-primary', 'w-100'],() => this.displayChooseFaction());
     
@@ -246,7 +248,7 @@ export default class GameManager{
      */
     async mainMenu(){
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText(menu_texts.main_menu.text);
+        await this.handler.displayHandler.displayText(`${globals.greeting[this.player_faction]}${menu_texts.main_menu.text}`);
 
         let button_trade: Button = new Button('trade',['btn', 'btn-primary', 'w-100'], () => this.tradeMenu());
         let button_manage_food: Button = new Button('Manage food',['btn', 'btn-primary', 'w-100'],() => this.manageFoodMenu());
@@ -462,7 +464,7 @@ export default class GameManager{
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'\n'+(this.citizenManager.citizen_dead_this_year)+' died last year ' + 'and '+ (this.citizenManager.citizen_new_this_year) + ' citizens have been born this year' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
+        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'\n'+(this.citizenManager.citizen_dead_this_year)+' died last year ' + '\n'+ (this.citizenManager.citizen_new_this_year) + ' citizens have been born this year' + '\n' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
