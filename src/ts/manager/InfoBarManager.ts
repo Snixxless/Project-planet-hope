@@ -2,17 +2,17 @@ import { IResource, IInfoBarObj } from "../utils/interfaces";
 
 import Col from "../HTML-Handler/Col";
 import Row from "../HTML-Handler/Row";
-import { globals } from "../utils/game-text";
+import { faction } from "../utils/global_values";
 
 export default class InfobarManager{
 
-    element     : HTMLDivElement    = null;
-    player_faction     : number            = null;
-    citizens    : IResource         = {amount: null, maximum: null};
-    food        : IResource         = {amount: null, maximum: null};
-    land        : IResource         = {amount: null, maximum: null};
-    credits     : number            = null;
-    year        : number            = null;
+    element             : HTMLDivElement    = null;
+    player_faction      : number            = null;
+    citizens            : IResource         = {amount: null, maximum: null};
+    food                : IResource         = {amount: null, maximum: null};
+    land                : IResource         = {amount: null, maximum: null};
+    credits             : number            = null;
+    year                : number            = null;
 
     constructor(){
         this.element = <HTMLDivElement>document.getElementById('status-bar');
@@ -64,7 +64,7 @@ export default class InfobarManager{
         this.element.innerHTML = "";
 
         let flagDisplay = new Col();
-        flagDisplay.element.innerHTML = `<div style="background: ${globals.flag_color[this.player_faction]}"></div>`;
+        flagDisplay.element.style.background = faction.colors[this.player_faction];
 
         let creditDisplay = new Col();
         creditDisplay.element.innerHTML = `<div><img src="./src/img/icons/ed_icon_B.png" class="icon me-4" alt="picture">€/\$ ${this.credits}</div>`;

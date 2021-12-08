@@ -18,12 +18,6 @@ let globals = {
         `greetings sir`, //0
         `Hello cocksucker`,   //1
         `greetings comrade` //2
-    ],
-    flag_color:[
-        `#054db2`,
-        `#f2b124`,
-        `#8c0505`
-
     ]
 }
 
