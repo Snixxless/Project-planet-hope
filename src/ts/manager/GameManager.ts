@@ -109,7 +109,7 @@ export default class GameManager{
             default:
                 break;
         }
-        //,this.citizenManager.refreshStats(this.citizen);
+        //.this.citizenManager.refreshStats(this.citizen);
         //console.log(this.citizen);
 
         this.citizenManager.checkDeath(this.citizen); // check if some citizens died during the journey 
@@ -156,7 +156,7 @@ export default class GameManager{
     checkGameOver(): boolean{
         if(this.citizen.length < 1 || this.credits < -500){
             return(true);
-        }
+        } else return false;
     }
 
     updateInfoBarAll(): void{
