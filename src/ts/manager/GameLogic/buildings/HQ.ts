@@ -4,6 +4,8 @@ import { BuildingType } from "../../../utils/enums";
 
 export default class HQ extends Building{
 
+    buildCost: number;
+
     constructor(){
         super();
         this.buildCost = 5000;
