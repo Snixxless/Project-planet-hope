@@ -38,9 +38,9 @@ export default class CitizenManager {
     this.refreshStats(citizens);
     this.calHornyState(citizens);
     this.yearHunger(citizens);
-    console.log(citizens);
-    this.feedCitizen(citizens, distributed_food); // TODO ????? what is the problem
-    console.log(citizens);
+    this.feedCitizen(citizens, distributed_food);
+
+    //console.log(citizens);
     this.checkDeath(citizens);
 
     this.makeAllOld(citizens, 1);
@@ -91,27 +91,31 @@ export default class CitizenManager {
     citizens.forEach((citizen) => {
       numbersArray.push(citizen.hunger);
     });
-
+    
     let min = Math.min(...numbersArray);
 
-    if (distributed_food > 0) {
-        let index = 0;
-        citizens.sort((a, b) => a.saturation - b.saturation);
-        while (distributed_food >= min) {
-            if (distributed_food > min) {
-            distributed_food -= citizens[index].getHunger();
-            citizens[index].setSaturation(1);
-            index++;
-                if(index >= citizens.length){
-                    index = 0;
+        if (distributed_food > 0) {
+            let index = 0;
+            citizens.sort((a, b) => a.saturation - b.saturation);
+            while (distributed_food >= min) {
+                if (distributed_food > min) {
+                    distributed_food -= citizens[index].getHunger();
+                    citizens[index].setSaturation(1);
+                    index++;
+                    if(index >= citizens.length){
+                        index = 0;
+                    }
+                } else {
+                    return;
                 }
-            } else {
-            return;
+                
             }
-            
-        }
-        //console.log(`Distributed food 2 : ${distributed_food}`);
-        //console.log(citizens);
+
+            // Errors
+            if(distributed_food < 0){
+                console.error("citzen feed system: distributed food is negative");
+                console.log(`Distributed food : ${distributed_food}`);
+            }
         }
     }
     
