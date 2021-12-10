@@ -17,7 +17,7 @@ export default class Citizen{
 
 
     hunger          : number = 15;  // 5-25 how much the citizen will eat
-    saturation      : Saturation = 3;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
+    saturation      : Saturation = 1;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
 
     work_power      : number = 5;   // 1-50 
     
@@ -28,6 +28,7 @@ export default class Citizen{
     constructor(){
 
     }
+    
     /**
      * checks if the citizen will die, nice
      * @returns 
@@ -84,26 +85,23 @@ export default class Citizen{
     setHunger(num: number): void{
         if(5 < num || num < 25){       // 
             this.hunger += num;        // adds hunger from given "num"
-            if(this.hunger > 100){
-                this.hunger = 100;
-            } else if(this.hunger < 0){
-                this.hunger = 0;
+            if(this.hunger > 25){
+                this.hunger = 25;
+            } else if(this.hunger < 5){
+                this.hunger = 5;
             }
         }
     }
+    
     setSaturation(num: number){
         if(0 < num || num < 4){
             this.saturation += num;
-            if(this.saturation > 100){
-                this.saturation = 100;
+            if(this.saturation >= 4){
+                this.saturation = 4;
             } else if(this.saturation < 0){
                 this.saturation = 0;
             }
         }
-    }
-
-    setSaturationState(){
-
     }
 
     setWorkPower(num: number): void{

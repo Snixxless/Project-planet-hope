@@ -3,25 +3,51 @@ import { Gender } from "../../utils/enums";
 
 export default class CitizenManager{
 
-//    citizen_lifeStage       :number;
-    population              : number = 0;
-    citizen_hunger_sum      : number;
-    citizen_workPower_sum   : number;
+// Citizen Stats
+    population              : number = 0; //amount of citizens
 
-    citizen_depression_sum  : number;
-    citizen_depression_ave  : number;
+    citizen_hunger_sum      : number = 0;
+    citizen_hunger_ave      : number = 0;
 
-    citizen_happiness_sum   : number;
-    citizen_happiness_ave   : number;
+    citizen_workPower_sum   : number = 0;
 
-    citizen_age_sum         : number;
-    citizen_age_ave         : number;
+    citizen_depression_sum  : number = 0;
+    citizen_depression_ave  : number = 0;
 
-    citizen_dead            : number = 0;
+    citizen_happiness_sum   : number = 0;
+    citizen_happiness_ave   : number = 0;
+
+    citizen_age_sum         : number = 0;
+    citizen_age_ave         : number = 0;
+
+// Temporary Vars
     citizen_dead_this_year  : number = 0;
     citizen_new_this_year   : number = 0;
 
+// For highscore
+    citizen_dead            : number = 0;
+
 // Settings
+
+
+    newYearRoutine(citizens: Citizen[],distributed_food: number){
+        console.table({sum_hunger: this.calSumHunger(citizens)});
+        // reset
+        this.citizen_new_this_year = 0;
+        this.citizen_dead_this_year = 0;
+
+        // citizens
+        this.refreshStats(citizens);
+        this.calHornyState(citizens);
+        this.yearHunger(citizens);
+        this.feedCitizen(citizens, distributed_food); // TODO ????? what is the problem
+        this.checkDeath(citizens);
+
+        this.makeAllOld(citizens,1);
+        this.refreshStats(citizens);
+
+        this.makeAllHappy(citizens,Math.floor((Math.random() * 100))); // TODO for testing
+    }
 
     /**
      * Creates new citizen. New citizens will  be pushed in a Array.
@@ -54,8 +80,37 @@ export default class CitizenManager{
         //this.refreshStats(citizens);
     }
 
-    feedCitizen(){
+    /**
+     * gives citizens food to ++ the saturation, using the bubble sort algorithm
+     * @param citizen Name of the citizens array
+     * @param distributed_food The amount of food the play planed to distribute
+     */
+    feedCitizen(citizen: Citizen[],distributed_food: number,){
+        while (distributed_food > 10){
+            console.table({distributedood1: distributed_food});
+            console.log(citizen);
+            citizen.sort( (a, b) => a.saturation - b.saturation)
+            citizen.forEach ((citizen) =>{
+                if(distributed_food > 5){                
+                    distributed_food -= citizen.getHunger();
+                    citizen.setSaturation(1);
+                } else {
+                    return
+                }
 
+            })
+            console.table({distributedood2: distributed_food});
+        }
+    }
+
+    /**
+     * sets the saturation of all citizens in the array -1
+     * @param citizen Name of the citizens array
+     */
+    yearHunger(citizen: Citizen[]){
+        citizen.forEach ((citizen) =>{
+            citizen.setSaturation(-1);
+        })
     }
 
     bornNewCitizen(citizens: Citizen[]){
@@ -136,19 +191,6 @@ export default class CitizenManager{
             //HappinessSum: this.citizen_happiness_sum,
             Happiness_Ave: this.citizen_happiness_ave
         })*/
-    }
-
-    newYearRoutine(citizens: Citizen[]){
-        this.refreshStats(citizens);
-        this.calHornyState(citizens);
-        this.citizen_new_this_year = 0;
-        this.citizen_dead_this_year = 0;
-        this.checkDeath(citizens);
-        this.makeAllHappy(citizens,Math.floor((Math.random() * 100))); // TODO for testing
-        this.makeAllOld(citizens,1);
-        this.refreshStats(citizens);
-
-
     }
 
     /**
@@ -279,6 +321,11 @@ export default class CitizenManager{
             this.citizen_hunger_sum += citizen.getHunger();
         })
         //console.log(this.citizen_hunger);
+    }
+    calAveHunger(citizen: Citizen[]){
+        this.citizen_hunger_ave = 0;
+        this.calSumHunger(citizen);
+        this.citizen_hunger_ave += Math.floor(this.citizen_hunger_sum / this.population);
     }
 
     calHornyState(citizens: Citizen[]){
