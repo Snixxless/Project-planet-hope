@@ -17,7 +17,7 @@ export default class Citizen{
 
 
     hunger          : number = 15;  // 5-25 how much the citizen will eat
-    saturation      : Saturation = 3;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
+    saturation      : Saturation = 2;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
 
     work_power      : number = 5;   // 1-50 
     
@@ -28,6 +28,7 @@ export default class Citizen{
     constructor(){
 
     }
+    
     /**
      * checks if the citizen will die, nice
      * @returns 
@@ -84,26 +85,23 @@ export default class Citizen{
     setHunger(num: number): void{
         if(5 < num || num < 25){       // 
             this.hunger += num;        // adds hunger from given "num"
-            if(this.hunger > 100){
-                this.hunger = 100;
-            } else if(this.hunger < 0){
-                this.hunger = 0;
+            if(this.hunger > 25){
+                this.hunger = 25;
+            } else if(this.hunger < 5){
+                this.hunger = 5;
             }
         }
     }
+    
     setSaturation(num: number){
         if(0 < num || num < 4){
             this.saturation += num;
-            if(this.saturation > 100){
-                this.saturation = 100;
+            if(this.saturation >= 4){
+                this.saturation = 4;
             } else if(this.saturation < 0){
                 this.saturation = 0;
             }
         }
-    }
-
-    setSaturationState(){
-
     }
 
     setWorkPower(num: number): void{
@@ -130,7 +128,7 @@ export default class Citizen{
         //console.log(this.happiness_state)
     }
 
-    setHappinessState(){
+    setHappinessState(): void{
         if (this.happiness > 0 && this.happiness < 15 ){
             this.happiness_state = Happiness.very_unhappy;
         } else if (this.happiness > 15 && this.happiness < 39){
@@ -144,7 +142,7 @@ export default class Citizen{
         }
     }
 
-    checkHorny(){
+    checkHorny(): void{
         if(this.life_stage > 0 && this.happiness_state > 0 && this.saturation > 1 && this.depression < 80){
         this.isHorny = true;
         //    console.table({is_horny: this.isHorny})
@@ -153,25 +151,26 @@ export default class Citizen{
     }
 
 // - - - - - - - - - - Send the value back - - - - - - - - - -
-    getDepression(){
+    getDepression(): number{
         return(this.depression);
     }
-    getAge(){
+    getAge(): number{
         return(this.age);
     }
-    getWorkPower(){
+    getWorkPower(): number{
         return(this.work_power);
     }
-    getHunger(){
+    getHunger(): number{
         return(this.hunger);
+        console.log(this.hunger);
     }
-    getHappiness(){
+    getHappiness(): number{
         return(this.happiness);
     }
-    getHorny(){
+    getHorny(): boolean{
         return(this.isHorny);
     }
-    getGender(){
+    getGender(): number{
         return(this.gender);
     }
 }

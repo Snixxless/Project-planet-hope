@@ -132,20 +132,16 @@ export default class GameManager{
     }
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
-        this.citizenManager.newYearRoutine(this.citizen);
-        this.food_amount -= this.citizenManager.getCitizenHungerSum(this.citizen);
-        this.food_amount += this.foodManager.harvestProfit();
-
+        this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
+        //this.citizenManager.feedCitizen(this.citizen, this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
-
-        console.log(this.citizen)
+        console.log(this.citizen);
         
         if(this.checkGameOver()){
             this.showGameOver();
         } else {
             this.showReport();
             this.year++
-            this.citizenManager.citizen_dead_this_year = 0;
             this.updateInfoBarAll();
             
         }
@@ -171,7 +167,7 @@ export default class GameManager{
             year: this.year,
         })
     }
-    getFoodStorage(){
+    getFoodStorage(): void{
         this.food_storage = this.BuildingManager.getFoodStorage();
     }
     getAppartments(){
@@ -247,7 +243,8 @@ export default class GameManager{
      * shows MAIN MENU
      */
     async mainMenu(){
-        this.handler.selectAreaHandler.clearView();
+        
+        this.citizenManager.calSumHunger(this.citizen);
         await this.handler.displayHandler.displayText(`${globals.greeting[this.player_faction]}${menu_texts.main_menu.text}`);
 
         let button_trade: Button = new Button('trade',['btn', 'btn-primary', 'w-100'], () => this.tradeMenu());
@@ -424,6 +421,7 @@ export default class GameManager{
      * Shows the DISTRIBUTE FOOD MENU
      */
     async distributeFoodMenu(): Promise<void>{
+        console.table({sum_hunger: this.citizenManager.getCitizenHungerSum(this.citizen)});
         await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+' Food planed for this Year');
 
         let input_food: Input = new Input(['w-100'],'distribute-food-amount');

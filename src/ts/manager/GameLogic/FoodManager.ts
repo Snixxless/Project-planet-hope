@@ -1,3 +1,4 @@
+import Citizen from "../../npc/Citizen";
 export default class FoodManager{
 
     private profit_range                : number = 5;
@@ -18,7 +19,9 @@ export default class FoodManager{
 
     }
 
+    newYearRoutine(citizens: Citizen[]){
 
+    }
 
 
     // - - - - - - - - - - Plant Seeds - - - - - - - - - -
