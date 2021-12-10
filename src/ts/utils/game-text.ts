@@ -15,9 +15,9 @@ let globals = {
         faction_3: `Red Legion`
     },
     greeting:[
-        `greetings sir`, //0
-        `Hello cocksucker`,   //1
-        `greetings comrade` //2
+        `greetings sir`,        //0
+        `Hello president`,      //1
+        `greetings comrade`     //2
     ]
 }
 
