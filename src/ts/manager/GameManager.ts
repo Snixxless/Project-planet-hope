@@ -132,12 +132,10 @@ export default class GameManager{
     }
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
-        console.table({sum_hunger: this.citizenManager.calSumHunger(this.citizen)});
-        console.log(this.citizenManager.calSumHunger(this.citizen))
         this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
         //this.citizenManager.feedCitizen(this.citizen, this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
-        console.log(this.citizen)
+        console.log(this.citizen);
         
         if(this.checkGameOver()){
             this.showGameOver();
@@ -169,7 +167,7 @@ export default class GameManager{
             year: this.year,
         })
     }
-    getFoodStorage(){
+    getFoodStorage(): void{
         this.food_storage = this.BuildingManager.getFoodStorage();
     }
     getAppartments(){
@@ -423,6 +421,7 @@ export default class GameManager{
      * Shows the DISTRIBUTE FOOD MENU
      */
     async distributeFoodMenu(): Promise<void>{
+        console.table({sum_hunger: this.citizenManager.getCitizenHungerSum(this.citizen)});
         await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+' Food planed for this Year');
 
         let input_food: Input = new Input(['w-100'],'distribute-food-amount');
