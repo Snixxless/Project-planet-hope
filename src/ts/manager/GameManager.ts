@@ -462,7 +462,7 @@ export default class GameManager{
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'\n'+(this.citizenManager.citizen_dead_this_year)+' died last year ' + '\n'+ (this.citizenManager.citizen_new_this_year) + ' citizens have been born this year' + '\n' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
+        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'\n'+(this.citizenManager.citizen_dead_this_year)+' died last year, and ' + (this.citizenManager.citizen_new_this_year) + ' citizens have been born' + '\n' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
