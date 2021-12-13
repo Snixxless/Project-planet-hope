@@ -19,7 +19,6 @@ export default class Citizen{
     hunger          : number = 15;  // 5-25 how much the citizen will eat
     saturation      : Saturation = 2;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
 
-    work_power      : number = 5;   // 1-50 
     
     mortality_rate  : number = 0.05;// it is what it says, verry brutal. RICE RICE RICE
     
@@ -54,8 +53,6 @@ export default class Citizen{
                 this.life_stage = LifeStage.adult;  
                 this.setHunger(5);              // makes him a big boy, girl, LGTV+ Ultra HD+
                 //this.hunger += 5;                   // sets the hunger to 20
-                this.setWorkPower(35);
-                //this.work_power = 40;              // sets the workpower to 40
                 this.mortality_rate = 0.4;          // sets the mortality_rate to 0.5 because adult life is more dangerous
                 this.setDepression(5);              // because nobody know how to handle the hornyness
                 break;
@@ -63,8 +60,6 @@ export default class Citizen{
                 this.life_stage = LifeStage.grandpa;                 // you did it you are now a oldtimer
                 this.setHunger(-2);
                 //this.hunger += -2;                   // sets the hunger to 20 | yeah less work less hunger
-                this.setWorkPower(-10);
-                //this.work_power = 30;                // sets the workpower to 40 | basacly you are now a pensonier, but you love your work. So you are still helping out, nice.
                 this.mortality_rate = 0.8;           // being old have some benefits, but getting more sick isnt one of them.
                 break;
         }
@@ -100,17 +95,6 @@ export default class Citizen{
                 this.saturation = 4;
             } else if(this.saturation < 0){
                 this.saturation = 0;
-            }
-        }
-    }
-
-    setWorkPower(num: number): void{
-        if(1 < num || num < 50){       // 
-            this.work_power += num;    // adds workPower from given "num"
-            if(this.work_power > 100){
-                this.work_power = 100;
-            } else if(this.work_power < 0){
-                this.work_power = 0;
             }
         }
     }
@@ -156,9 +140,6 @@ export default class Citizen{
     }
     getAge(): number{
         return(this.age);
-    }
-    getWorkPower(): number{
-        return(this.work_power);
     }
     getHunger(): number{
         return(this.hunger);
