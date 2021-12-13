@@ -43,4 +43,15 @@ let factions = {
     }
 }
 
-export {menu_texts, globals, factions};
+let errors = {
+    food_manager: {
+        seeds_on_land: {
+            no_food: "you do not have enough food.",
+            no_land: "you do not have enough free land.",
+            no_citizen: "you do not have enough citizens.",
+            negative: "you cant go in to a negative value"
+        }
+    }
+}
+
+export {menu_texts, globals, factions, errors};
