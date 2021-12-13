@@ -2,8 +2,8 @@ import Citizen from "../../npc/Citizen";
 import { seedsOnLandErrors } from "../../utils/enums";
 import { errors } from "../../utils/game-text";
 export default class FoodManager {
-  private profit_range: number = 25;
-  private base_profit_min: number = 10;
+  private profit_range: number = 50;
+  private base_profit_min: number = 25;
   private food_profit_rate: number;
 
   cultivated_land: number = 0;
@@ -24,7 +24,7 @@ export default class FoodManager {
 
   newYearRoutine(citizens: Citizen[]) {}
 
-  // - - - - - - - - - - Plant Seeds - - - - - - - - - -
+  // - - - - - - - - - -    Plant Seeds - - - - - - - - - -
   setCultivatedLand(
     amount: number,
     land_free: number,

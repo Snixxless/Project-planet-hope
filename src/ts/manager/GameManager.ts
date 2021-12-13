@@ -139,7 +139,7 @@ export default class GameManager{
 
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
-        debugger;
+        console.log(this.citizen)
         this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
         this.food_amount += this.foodManager.harvestProfit();
