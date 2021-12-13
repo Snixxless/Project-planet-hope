@@ -38,6 +38,7 @@ enum seedsOnLandErrors{
     no_food,
     no_land,
     no_citizen,
+    negative,
 }
 
 export {Factions, BuildingType, Happiness, Saturation, Gender, LifeStage, seedsOnLandErrors}
