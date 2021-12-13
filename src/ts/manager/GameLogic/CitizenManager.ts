@@ -8,8 +8,6 @@ export default class CitizenManager {
   citizen_hunger_sum: number = 0;
   citizen_hunger_ave: number = 0;
 
-  citizen_workPower_sum: number = 0;
-
   citizen_depression_sum: number = 0;
   citizen_depression_ave: number = 0;
 
@@ -194,7 +192,6 @@ export default class CitizenManager {
   refreshStats(citizens: Citizen[]): void {
     this.calAveAge(citizens);
     this.calSumHunger(citizens);
-    this.calSumWorkPower(citizens);
     this.calAveDepression(citizens);
     this.calAveHappiness(citizens);
     /** DEBUG
@@ -202,7 +199,6 @@ export default class CitizenManager {
             population: this.population,
             //AgeSum: this.citizen_age_sum,
             Age_Ave: this.citizen_age_ave,
-            WorkPower_Sum: this.citizen_workPower_sum,
             Hunger_Sum: this.citizen_hunger_sum,
             //DepressionSum: this.citizen_depression_sum,
             Depression_Ave: this.citizen_depression_ave,
@@ -327,15 +323,6 @@ export default class CitizenManager {
     //console.log(this.citizen_age_sum);
   }
 
-  // - - - - - - - - - - WORK POWER - - - - - - - - - -
-  calSumWorkPower(citizens: Citizen[]) {
-    this.citizen_workPower_sum = 0;
-    citizens.forEach((citizen) => {
-      this.citizen_workPower_sum += citizen.getWorkPower();
-    });
-    //console.log(this.citizen_workPower);
-  }
-
   // - - - - - - - - - - HUNGER - - - - - - - - - -
   calSumHunger(citizens: Citizen[]): void {
     this.citizen_hunger_sum = 0;
@@ -370,11 +357,6 @@ export default class CitizenManager {
   getCitizenHungerSum(citizens: Citizen[]): number {
     this.calSumHunger(citizens);
     return this.citizen_hunger_sum;
-  }
-
-  getCitizenWorkPowerSum(citizens: Citizen[]): number {
-    this.calSumWorkPower(citizens);
-    return this.citizen_workPower_sum;
   }
 
   getCitizenDepressionAve(citizens: Citizen[]): number {
