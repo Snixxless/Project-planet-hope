@@ -125,6 +125,7 @@ export default class GameManager{
         this.mainMenu();
         this.updateInfoBarAll();
         console.log(this.citizen);
+
         
     }
 
@@ -135,13 +136,15 @@ export default class GameManager{
         this.land_free= 0;
         this.citizen = [];
     }
+
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
+        debugger;
         this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
-        //this.citizenManager.feedCitizen(this.citizen, this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
-        console.log(this.citizen);
-        
+        this.food_amount += this.foodManager.harvestProfit();
+        this.land_free += this.foodManager.getCultivatedLand();
+
         if(this.checkGameOver()){
             this.showGameOver();
         } else {
@@ -384,31 +387,31 @@ export default class GameManager{
      * Shows the PLANT SEEDS MENU
      */
     async plantSeedsMenu(): Promise<void> {
-        await this.handler.displayHandler.displayText('You have '+ this.foodManager.seeds_planted_on_land +' seeds planed for this Year');
+        await this.handler.displayHandler.displayText(`To cultivate one Field you need ${this.foodManager.needed_citizens_for_land} Citizen and ${this.foodManager.need_seeds_for_land} food \n \nYou have `+ this.foodManager.cultivated_land +` seeds planed for this Year`);
 
         let input_seeds: Input = new Input(['w-100'],'plant-seed-amount');
 
-        let button_field_add: Button = new Button('add planned seeding',['btn', 'btn-primary', 'w-100'],() => this.plantSeeds(input_seeds.element));
-        let button_field_reduce: Button = new Button('reduce planned seeding',['btn', 'btn-primary', 'w-100'],() => {});
+        let button_field_add: Button = new Button('add planned seeding',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsLand(input_seeds.element));
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.manageFoodMenu());
 
         let col_1: Col = new Col([],[input_seeds]);
         let col_2: Col = new Col([],[button_field_add]);
-        let col_3: Col = new Col([],[button_field_reduce]);
         let col_back: Col = new Col([],[button_back]);
 
         let row_1: Row = new Row([],[col_1]);
-        let row_2: Row = new Row([],[col_2,col_3]);
+        let row_2: Row = new Row([],[col_2]);
         let row_back: Row = new Row([],[col_back]);
         this.handler.selectAreaHandler.setView([row_1,row_2, row_back]);
     }
 
-    async plantSeeds(input: HTMLInputElement){ // TODO ITS JUST A COPY CHANGE THAT
-        let result = this.foodManager.setSeedsOnLand(parseInt(input.value), this.food_amount);
+    // Setshow many Fields you want to cultivated
+    async plantSeedsLand(input: HTMLInputElement){
+        let result = this.foodManager.setCultivatedLand(parseInt(input.value), this.land_free, this.food_amount, this.citizen);
         if(result.error){
-            await this.handler.displayHandler.displayText(`I'm sorry commander, but you don't have enough Food to plant.`);
+            await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
         } else {
-            this.food_amount -= result.amount;
+            this.food_amount -= result.cost;
+            this.land_free -=  result.amount;
 
             this.infobar.update({
                 food:{
