@@ -25,7 +25,7 @@ export default class FoodManager{
 
 
     // - - - - - - - - - - Plant Seeds - - - - - - - - - -
-    getSeedsOnLand(amount: number): number{
+    giveSeedsOnLand(amount: number): number{
         this.seeds_planted_on_land += amount;
         return amount;
     }
@@ -34,7 +34,7 @@ export default class FoodManager{
             if(food > amount){
                 food -= amount;
                 return {
-                    amount  : this.getSeedsOnLand(amount),
+                    amount  : this.giveSeedsOnLand(amount),
                     cost    : food,
                     error   : false
                 };
