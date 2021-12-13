@@ -19,6 +19,7 @@ import Row from "../HTML-Handler/Row";
 import Col from "../HTML-Handler/Col";
 import GreenHouse from "./GameLogic/buildings/GreenHouse";
 import FinanceManager from "./GameLogic/FinanceManager";
+import VersionDisplay from "../HTML-Handler/VersionDisplay";
 
 export default class GameManager{
 
@@ -49,6 +50,8 @@ export default class GameManager{
     BuildingManager: BuildingManager;
 
     greenhouse: GreenHouse;
+
+    versionDisplay  : VersionDisplay;
     
 
     constructor(){
@@ -64,6 +67,8 @@ export default class GameManager{
         this.greenhouse                 = new GreenHouse();
         
         this.FinanceManager.calcGreenhouse(this.greenhouse);
+
+        this.versionDisplay             = new VersionDisplay("0.1.0")
 
         //this.displayChooseFaction();
         this.displayChooseFaction();
