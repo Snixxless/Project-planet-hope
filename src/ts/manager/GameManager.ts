@@ -72,7 +72,7 @@ export default class GameManager{
         
         this.FinanceManager.calcGreenhouse(this.greenhouse);
 
-        this.versionDisplay             = new VersionDisplay("0.1.3")
+        this.versionDisplay             = new VersionDisplay("0.1.4")
 
         //this.displayChooseFaction();
         this.displayChooseFaction();
@@ -86,6 +86,7 @@ export default class GameManager{
         this.landManager.newYearRoutine();
         this.food_amount += this.foodManager.harvestProfit();
         this.land_free += this.foodManager.getCultivatedLand(); 
+        this.foodManager.newYearRoutine();
 
         if(this.checkGameOver()){
             this.showGameOver();
@@ -161,9 +162,11 @@ export default class GameManager{
     }
 
     checkGameOver(): boolean{
-        if(this.citizen.length < 1 || this.credits < -500){
+        if(this.citizen.length <= 3 || this.credits < -500){
             return(true);
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     updateInfoBarAll(): void{
@@ -450,8 +453,7 @@ export default class GameManager{
      * Shows the DISTRIBUTE FOOD MENU
      */
     async distributeFoodMenu(): Promise<void>{
-        console.table({sum_hunger: this.citizenManager.getCitizenHungerSum(this.citizen)});
-        await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+' Food planed for this Year');
+        await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+` Food planed for this Year\n your citizens need ${this.citizenManager.getCitizenHungerSum(this.citizen)} food for this year.`);
 
         let input_food: Input = new Input(['w-100'],'distribute-food-amount');
 

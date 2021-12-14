@@ -38,7 +38,10 @@ export default class CitizenManager {
     this.yearHunger(citizens);
     this.feedCitizen(citizens, distributed_food);
 
-    //console.log(citizens);
+    this.checkDepression(citizens);
+    this.calSumDepression(citizens);
+    console.log(this.citizen_depression_sum);
+    console.log(this.citizen_depression_ave);
     this.checkDeath(citizens);
 
     this.makeAllOld(citizens, 1);
@@ -78,6 +81,11 @@ export default class CitizenManager {
     //this.refreshStats(citizens);
   }
 
+  checkDepression(citizens: Citizen[]): void {
+    citizens.forEach((citizen) => {
+      citizen.checkDepression();
+    });
+  }
   /**
    * gives citizens food to ++ the saturation, using the bubble sort algorithm
    * @param citizen Name of the citizens array

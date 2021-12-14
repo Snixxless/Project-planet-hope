@@ -22,8 +22,10 @@ export default class FoodManager {
 
   constructor() { }
 
-  newYearRoutine(citizens: Citizen[]) { }
-
+  newYearRoutine() {
+    this.distributed_food = 0;
+   }
+  
   // - - - - - - - - - -    Plant Seeds - - - - - - - - - -
   setCultivatedLand(
     amount: number,
