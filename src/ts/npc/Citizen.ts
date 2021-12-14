@@ -170,7 +170,6 @@ export default class Citizen{
     }
     getHunger(): number{
         return(this.hunger);
-        console.log(this.hunger);
     }
     getHappiness(): number{
         return(this.happiness);
@@ -180,5 +179,8 @@ export default class Citizen{
     }
     getGender(): number{
         return(this.gender);
+    }
+    getSaturation():number{
+        return(this.saturation)
     }
 }

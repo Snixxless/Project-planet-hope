@@ -3,7 +3,7 @@ let menu_texts = {
         text: `Choose your Faction you want to play!`
     },
     main_menu: {
-        text:   ` we are waiting for you orders.`
+        text:   ` we are waiting for you instructions.`
     },
 
 }
@@ -17,7 +17,7 @@ let globals = {
     greeting:[
         `greetings sir`,        //0
         `Hello president`,      //1
-        `greetings comrade`     //2
+        `zdrastuy comrade`     //2
     ]
 }
 
@@ -40,6 +40,12 @@ let factions = {
         `,
         history: ``,
         characteristics:``,
+    }
+}
+
+let info = {
+    distribut_food:{
+        citizens_hungry: "your citizens seem hungry, you shoud give them more then they need"
     }
 }
 
@@ -66,4 +72,4 @@ let errors = {
     }
 }
 
-export {menu_texts, globals, factions, errors};
+export {menu_texts, globals, factions, errors, info};

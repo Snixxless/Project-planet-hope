@@ -17,6 +17,9 @@ export default class CitizenManager {
   citizen_age_sum: number = 0;
   citizen_age_ave: number = 0;
 
+  citizen_saturation_sum: number = 0;
+  citizen_saturation_ave: number = 0;
+
   // Temporary Vars
   citizen_dead_this_year: number = 0;
   citizen_new_this_year: number = 0;
@@ -124,8 +127,6 @@ export default class CitizenManager {
             }
         }
     }
-    
-  
 
   /**
    * sets the saturation of all citizens in the array -1
@@ -339,13 +340,32 @@ export default class CitizenManager {
     });
     //console.log(this.citizen_hunger_sum);
   }
-  calAveHunger(citizen: Citizen[]): void {
+  calAveHunger(citizens: Citizen[]): void {
     this.citizen_hunger_ave = 0;
-    this.calSumHunger(citizen);
+    this.calSumHunger(citizens);
     this.citizen_hunger_ave += Math.floor(
       this.citizen_hunger_sum / this.population
     );
   }
+
+  // - - - - - - - - - - SATURATION - - - - - - - - - - 
+  calSumSaturation(citizens: Citizen[]): void{
+    this.citizen_saturation_sum = 0;
+    citizens.forEach((citizen) => {
+      this.citizen_saturation_sum += citizen.getSaturation();
+    });
+  }
+
+  calAveSaturation(citizens: Citizen[]): void{
+    this.citizen_saturation_ave = 0;
+    this.calSumSaturation(citizens);
+    this.citizen_saturation_ave += (this.citizen_saturation_sum / this.population)
+    console.log(this.citizen_saturation_ave)
+  }
+
+
+
+
 
   calHornyState(citizens: Citizen[]): void {
     citizens.forEach((citizen) => {
@@ -375,5 +395,9 @@ export default class CitizenManager {
   getCitizensHappinessAve(citizens: Citizen[]): number {
     this.calAveHappiness(citizens);
     return this.citizen_happiness_ave;
+  }
+  getCitizensSaturationAve(citizens: Citizen[]): number{
+    this.calAveSaturation(citizens);
+    return this.citizen_saturation_ave;
   }
 }
