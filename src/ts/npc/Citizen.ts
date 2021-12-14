@@ -63,8 +63,43 @@ export default class Citizen{
                 this.mortality_rate = 0.8;           // being old have some benefits, but getting more sick isnt one of them.
                 break;
         }
-    } 
+    }
+    
+    
+// CHECKS
+    checkHorny(): void{
+        if(this.life_stage > 0 && this.happiness_state > 0 && this.saturation > 0 && this.depression < 80){
+            this.isHorny = true;
+        //    console.table({is_horny: this.isHorny})
+        } else {
+            this.isHorny = false;
+        }
 
+    }
+    checkDepression():void{
+        switch (this.saturation){
+            case 0:
+                if(this.life_stage > 0){
+                    this.setDepression(10);
+                    break;   
+                } else {
+                    this.setDepression(25);
+                    break;   
+                } 
+            case 1:
+                this.setDepression(5);
+                break;
+            case 2:
+                this.setDepression(-1);
+                break;
+            case 3:
+                this.setDepression(-5);
+                break;
+            case 4:
+                this.setDepression(-10);
+                break;        
+        }
+    }
 // - - - - - - - - - - Set values - - - - - - - - - -
     setDepression(num: number): void{
         if(0 < num || num < 100){       // 
@@ -124,16 +159,6 @@ export default class Citizen{
         } else if (this.happiness > 80){
             this.happiness_state= Happiness.very_Happy;
         }
-    }
-
-    checkHorny(): void{
-        if(this.life_stage > 0 && this.happiness_state > 0 && this.saturation > 1 && this.depression < 80){
-            this.isHorny = true;
-        //    console.table({is_horny: this.isHorny})
-        } else {
-            this.isHorny = false;
-        }
-
     }
 
 // - - - - - - - - - - Send the value back - - - - - - - - - -
