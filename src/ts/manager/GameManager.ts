@@ -74,7 +74,7 @@ export default class GameManager{
         
         this.FinanceManager.calcGreenhouse(this.greenhouse);
 
-        this.versionDisplay             = new VersionDisplay("0.1.4")
+        this.versionDisplay             = new VersionDisplay("0.1.5")
 
         //this.displayChooseFaction();
         this.displayChooseFaction();
