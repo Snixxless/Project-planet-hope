@@ -3,7 +3,6 @@ import { errors } from "../../utils/game-text";
 import { buyLandErrors } from "../../utils/enums";
 
 export default class LandManager {
-    avaible_land: number = 2000; // TODO Outsource this var to Gamemanager
     price_per_land: number = 25;
 
     private price_range: number = 40;
@@ -20,16 +19,16 @@ export default class LandManager {
     buyLand(
         amount: number, 
         credits: number, 
-        free_land: number
+        free_land: number,
+        land_avaible:number
         ): any {
         let neededCredits = amount * this.price_per_land;
         let error_message: buyLandErrors;
 
         if (amount !== undefined || amount !== null) {
             if (amount + free_land > 0){
-                if (amount + free_land <  this.avaible_land){
+                if (amount + free_land <  land_avaible){
                     if(credits > neededCredits){
-                        this.avaible_land -= amount;
                         return {
                             amount: amount,
                             cost: neededCredits,
@@ -81,10 +80,6 @@ export default class LandManager {
     }
 
     // Set Var Function
-    setAvaibleLand(amount: number): void {
-        // TODO Set Parameters for this or its going brrrrrrrrrt
-        this.avaible_land += amount;
-    }
 
     // Get Functions
 
