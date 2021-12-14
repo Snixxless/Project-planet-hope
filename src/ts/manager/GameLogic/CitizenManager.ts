@@ -50,7 +50,7 @@ export default class CitizenManager {
     this.makeAllOld(citizens, 1);
     this.refreshStats(citizens);
 
-    this.makeAllHappy(citizens, Math.floor(Math.random() * 100)); // TODO for testing
+    //this.makeAllHappy(citizens, Math.floor(Math.random() * 100)); // TODO for testing
   }
 
   /**

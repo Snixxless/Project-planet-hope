@@ -28,6 +28,8 @@ export default class FinanceManager {
         return profit;
     }
     
+    // - - - - - - - - - - Calculation functions - - - - - - - - - -
+
     calCitizensToNum(citizens: Citizen[]): number{
         let citizen_amount: number = 0;
         citizens.forEach((citizen) => {
@@ -68,4 +70,7 @@ export default class FinanceManager {
         this.credits_balance = this.credits_income - this.credits_expenses;
     }
 
+    // - - - - - - - - - - get functions - - - - - - - - - -
+
+    
 }

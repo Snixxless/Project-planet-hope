@@ -72,7 +72,7 @@ export default class GameManager{
 
         this.greenhouse                 = new GreenHouse();
 
-        this.versionDisplay             = new VersionDisplay("0.1.5")
+        this.versionDisplay             = new VersionDisplay("0.1.6")
 
         //this.displayChooseFaction();
         this.displayChooseFaction();
