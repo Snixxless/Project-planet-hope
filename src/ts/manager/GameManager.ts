@@ -320,7 +320,7 @@ export default class GameManager{
      */
      async landTradeMenu(): Promise<void>{
         this.calLand_avaible();
-        await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits \n for now the bank have ${this.land_avaible} claims to Sell`);
+        await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits. \n For now the bank have ${this.land_avaible} claims to sell. \n Dont forget that you can only trade land once a year.`);
         let input_land: Input = new Input(['w-100'],'land-trade-amount');
 
         let button_buy: Button = new Button('buy land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
@@ -337,7 +337,7 @@ export default class GameManager{
     }
 
     async buyLand(input: HTMLInputElement){
-        debugger;
+        //debugger;
         let result = this.landManager.buyLand(parseInt(input.value), this.credits,this.land_free,this.land_avaible);
         if(result.error){
             await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
