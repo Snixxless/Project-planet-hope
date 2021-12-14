@@ -36,15 +36,14 @@ export default class FoodManager {
     let citizens_amount = citizens.length;
     let error_message: seedsOnLandErrors;
 
+    //debugger;
+
     if (amount !== undefined || amount !== null) {
       if (this.cultivated_land + amount > 0) {
-        if (land_free >= amount) {
+        if (land_free + this.cultivated_land >= amount) {
           let neededFood = amount * this.need_seeds_for_land;
           if (food * this.need_seeds_for_land >= neededFood) {
-            if (
-              citizens_amount * this.needed_citizens_for_land >=
-              amount * this.needed_citizens_for_land
-            ) {
+            if ((citizens_amount - this.cultivated_land * this.needed_citizens_for_land) * this.needed_citizens_for_land >= amount * this.needed_citizens_for_land) {
               food -= amount;
               this.cultivated_land += amount;
               return {

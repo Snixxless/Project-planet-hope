@@ -305,7 +305,7 @@ export default class GameManager{
         await this.handler.displayHandler.displayText('Trade Menu');
 
         let button_land: Button = new Button('trade land',['btn', 'btn-primary', 'w-100'],() => this.landTradeMenu());
-        let button_food: Button = new Button('trade food',['btn', 'btn-primary', 'w-100'],() => this.foodTradeMenu());
+        let button_food: Button = new Button('trade food',['btn', 'btn-primary', 'w-100'],() => this.foodTradeMenu(), true);
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
 
         let col_1: Col = new Col([],[button_land]);
