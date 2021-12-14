@@ -71,8 +71,6 @@ export default class GameManager{
         this.BuildingManager            = new BuildingManager()
 
         this.greenhouse                 = new GreenHouse();
-        
-        this.FinanceManager.calcGreenhouse(this.greenhouse);
 
         this.versionDisplay             = new VersionDisplay("0.1.5")
 
@@ -85,10 +83,15 @@ export default class GameManager{
         console.log(this.citizen)
         this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
-        this.landManager.newYearRoutine();
+
         this.food_amount += this.foodManager.harvestProfit();
+
+        this.landManager.newYearRoutine();
         this.land_free += this.foodManager.getCultivatedLand(); 
+
         this.foodManager.newYearRoutine();
+
+        this.credits += this.FinanceManager.newYearRoutine(this.citizen,this.land_amount)
 
         if(this.checkGameOver()){
             this.showGameOver();
@@ -111,7 +114,7 @@ export default class GameManager{
             case 0:
                 this.credits = 4500;
                 this.food_amount = 5000;
-                this.land_free = 450;
+                this.land_free = 100;
 
                 this.citizenManager.createCitizen(75,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
@@ -121,7 +124,7 @@ export default class GameManager{
             case 1:
                 this.credits = 9500;
                 this.food_amount = 5000;
-                this.land_free = 450;
+                this.land_free = 100;
 
                 this.citizenManager.createCitizen(50,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 65); //TODO for testing
@@ -131,7 +134,7 @@ export default class GameManager{
             case 2:
                 this.credits = 1500;
                 this.food_amount = 10000;
-                this.land_free = 450;
+                this.land_free = 100;
 
                 this.citizenManager.createCitizen(100,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 40); //TODO for testing
@@ -499,7 +502,13 @@ export default class GameManager{
     // - - - - - - - - - - REPORT MENU - - - - - - - - - -
     async showReport(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('This is the Report for Year ' + (this.year)+'\n'+(this.citizenManager.citizen_dead_this_year)+' died last year, and ' + (this.citizenManager.citizen_new_this_year) + ' citizens have been born' + '\n' + ' you made ' + (this.foodManager.food_profit_this_year) + ' Food');
+        await this.handler.displayHandler.displayText(
+            `This is the Report for Year ${this.year}
+            \n our colony makes a income of ${this.FinanceManager.credits_income} while the expanses are ${this.FinanceManager.credits_expenses}
+            \n that makes a revenue of ${this.FinanceManager.credits_balance} Credits
+            \n we made ${this.foodManager.food_profit_this_year} food
+            \n ${this.citizenManager.citizen_dead_this_year} citizens died last year, and ${this.citizenManager.citizen_new_this_year} have been born
+            `)
 
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
