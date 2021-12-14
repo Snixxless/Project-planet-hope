@@ -391,7 +391,7 @@ export default class GameManager{
         await this.handler.displayHandler.displayText('Manage food Menu');
 
         let button_plant: Button = new Button('plant Seeds',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsMenu());
-        let button_distribute: Button = new Button('Distribute food',['btn', 'btn-primary', 'w-100'],() => this.distributeFoodMenu());
+        let button_distribute: Button = new Button('distribute food',['btn', 'btn-primary', 'w-100'],() => this.distributeFoodMenu());
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
 
         let col_1: Col = new Col([],[button_plant]);
@@ -471,9 +471,9 @@ export default class GameManager{
     }
 
     async distributFood(input: HTMLInputElement){
-        let result = this.foodManager.setDistributedFood(parseInt(input.value), this.food_amount);
+        let result = this.foodManager.setDistributFood(parseInt(input.value), this.food_amount);
         if(result.error){
-            await this.handler.displayHandler.displayText(`I'm sorry commander, but you don't have enough Food to distribiute.`);
+            await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
         } else {
             this.food_amount -= result.amount;
 
