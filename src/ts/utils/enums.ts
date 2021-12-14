@@ -34,13 +34,6 @@ enum LifeStage{
     grandpa
 }
 
-enum seedsOnLandErrors{
-    no_food,
-    no_land,
-    no_citizen,
-    negative,
-}
-
 enum buyLandErrors{
     no_land,
     no_credits,
@@ -49,4 +42,17 @@ enum buyLandErrors{
     
 }
 
-export {Factions, BuildingType, Happiness, Saturation, Gender, LifeStage, seedsOnLandErrors, buyLandErrors}
+enum seedsOnLandErrors{
+    no_food,
+    no_land,
+    no_citizen,
+    negative,
+}
+
+enum DistributeFoodError{
+    no_food,
+    negative
+}
+
+
+export {Factions, BuildingType, Happiness, Saturation, Gender, LifeStage, seedsOnLandErrors, buyLandErrors, DistributeFoodError}

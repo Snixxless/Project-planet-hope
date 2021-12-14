@@ -1,5 +1,5 @@
 import Citizen from "../../npc/Citizen";
-import { seedsOnLandErrors } from "../../utils/enums";
+import { DistributeFoodError, seedsOnLandErrors } from "../../utils/enums";
 import { errors } from "../../utils/game-text";
 export default class FoodManager {
   private profit_range: number = 50;
@@ -122,27 +122,48 @@ export default class FoodManager {
   }
 
   // - - - - - - - - - - FOOD DISTRIBUTE - - - - - - - - - -
-  getDistributedFood(amount: number): number {
-    this.distributed_food += amount;
-    return amount;
-  }
-  setDistributedFood(amount: number, food: number): any {
-    if (food !== undefined || food !== null) {
-      if (food > amount) {
-        food -= amount;
-        return {
-          amount: this.getDistributedFood(amount),
-          cost: food,
-          error: false,
-        };
+  setDistributFood(amount: number, food: number): any {
+    let error_message: DistributeFoodError;
+
+    if (amount !== undefined || amount !== null) {
+      if (amount + this.distributed_food > 0) {
+        if (food > amount) {
+          this.distributed_food += amount;
+          return {
+            amount: amount,
+            cost: food,
+            error: false,
+          };
+        } else {
+          error_message = DistributeFoodError.no_food;
+        }
+      } else {
+        error_message = DistributeFoodError.negative;
       }
     }
     return {
       amount: 0,
       cost: 0,
       error: true,
+      error_message: this.distributFoodErrorHandler(error_message),
     };
   }
+
+  distributFoodErrorHandler(error_message: DistributeFoodError): string {
+    switch (error_message) {
+      case DistributeFoodError.no_food:
+        return errors.food_manager.distribut_food.no_food;
+        break;
+      case DistributeFoodError.negative:
+        return errors.food_manager.distribut_food.negative;
+        break;
+      default:
+        console.error("Fehlerhafte Message Range");
+        return "";
+        break;
+    }
+  }
+
   resetDistributedFood() {
     this.distributed_food = 0;
   }

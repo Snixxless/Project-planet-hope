@@ -50,6 +50,10 @@ let errors = {
             no_land: "you do not have enough free land.",
             no_citizen: "you do not have enough citizens.",
             negative: "you cant go in to a negative value"
+        },
+        distribut_food: {
+            no_food: "you do not have enough food",
+            negative: "you cant go in to a negative value"
         }
     },
     land_manager: {
