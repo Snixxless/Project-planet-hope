@@ -128,8 +128,10 @@ export default class Citizen{
 
     checkHorny(): void{
         if(this.life_stage > 0 && this.happiness_state > 0 && this.saturation > 1 && this.depression < 80){
-        this.isHorny = true;
+            this.isHorny = true;
         //    console.table({is_horny: this.isHorny})
+        } else {
+            this.isHorny = false;
         }
 
     }
