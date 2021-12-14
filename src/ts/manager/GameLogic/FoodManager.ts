@@ -60,7 +60,7 @@ export default class FoodManager {
           error_message = seedsOnLandErrors.no_land;
         }
       } else {
-          error_message = seedsOnLandErrors.negative;
+        error_message = seedsOnLandErrors.negative;
       }
     }
 
@@ -83,7 +83,7 @@ export default class FoodManager {
       case seedsOnLandErrors.no_land:
         return errors.food_manager.seeds_on_land.no_land;
         break;
-    case seedsOnLandErrors.negative:
+      case seedsOnLandErrors.negative:
         return errors.food_manager.seeds_on_land.negative;
       default:
         console.error("Fehlerhafte Message Range");
