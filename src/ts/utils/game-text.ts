@@ -51,6 +51,13 @@ let errors = {
             no_citizen: "you do not have enough citizens.",
             negative: "you cant go in to a negative value"
         }
+    },
+    land_manager: {
+        buy_land:{
+            no_credits: "you dont heave enough credits",
+            no_land: "you cant buy more Land than the limit of the Bank allows.",
+            negative: "You cant sell more land than you own."
+        }
     }
 }
 

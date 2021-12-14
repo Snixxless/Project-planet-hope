@@ -68,7 +68,7 @@ export default class GameManager{
         
         this.FinanceManager.calcGreenhouse(this.greenhouse);
 
-        this.versionDisplay             = new VersionDisplay("0.1.2")
+        this.versionDisplay             = new VersionDisplay("0.1.3")
 
         //this.displayChooseFaction();
         this.displayChooseFaction();
@@ -142,11 +142,13 @@ export default class GameManager{
         console.log(this.citizen)
         this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
+        this.landManager.newYearRoutine();
         this.food_amount += this.foodManager.harvestProfit();
-        this.land_free += this.foodManager.getCultivatedLand();
+        this.land_free += this.foodManager.getCultivatedLand(); 
 
         if(this.checkGameOver()){
             this.showGameOver();
+            return
         } else {
             this.showReport();
             this.year++
@@ -300,28 +302,26 @@ export default class GameManager{
      * Shows the LAND TRADING MENU
      */
      async landTradeMenu(): Promise<void>{
-        await this.handler.displayHandler.displayText('The Price for 1 Claim of Land cost '+this.landManager.price_per_land+' creits');
+        await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits \n for now the bank have ${this.landManager.avaible_land} claims to Sell`);
         let input_land: Input = new Input(['w-100'],'land-trade-amount');
 
         let button_buy: Button = new Button('buy land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
-        let button_sell: Button = new Button('sell land',['btn', 'btn-primary', 'w-100'],() => {});
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.tradeMenu());
 
         let col_1: Col = new Col([],[input_land]);
         let col_2: Col = new Col([],[button_buy]);
-        let col_3: Col = new Col([],[button_sell]);
         let col_back: Col = new Col([],[button_back]);
 
         let row_1: Row = new Row([],[col_1]);
-        let row_2: Row = new Row([],[col_2,col_3]);
+        let row_2: Row = new Row([],[col_2]);
         let row_back: Row = new Row([],[col_back]);
         this.handler.selectAreaHandler.setView([row_1,row_2, row_back]);
     }
 
     async buyLand(input: HTMLInputElement){
-        let result = this.landManager.buyLand(parseInt(input.value), this.credits);
+        let result = this.landManager.buyLand(parseInt(input.value), this.credits,this.land_free);
         if(result.error){
-            await this.handler.displayHandler.displayText(`I'm sorry commander, but you don't have enough credits to buy that.`);
+            await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
 
         } else {
             this.land_amount += result.amount;
@@ -335,7 +335,7 @@ export default class GameManager{
                 }
             })
 
-            this.mainMenu();
+            this.landTradeMenu();
         }
     }
 

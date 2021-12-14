@@ -41,4 +41,11 @@ enum seedsOnLandErrors{
     negative,
 }
 
-export {Factions, BuildingType, Happiness, Saturation, Gender, LifeStage, seedsOnLandErrors}
+enum buyLandErrors{
+    no_land,
+    no_credits,
+    negative
+    
+}
+
+export {Factions, BuildingType, Happiness, Saturation, Gender, LifeStage, seedsOnLandErrors, buyLandErrors}
