@@ -56,7 +56,8 @@ let errors = {
         buy_land:{
             no_credits: "you dont heave enough credits",
             no_land: "you cant buy more Land than the limit of the Bank allows.",
-            negative: "You cant sell more land than you own."
+            negative: "You cant sell more land than you own.",
+            no_trade: "You can trade Land only once a year"
         }
     }
 }

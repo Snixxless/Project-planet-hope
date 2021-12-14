@@ -44,7 +44,8 @@ enum seedsOnLandErrors{
 enum buyLandErrors{
     no_land,
     no_credits,
-    negative
+    negative,
+    no_trade
     
 }
 

@@ -33,23 +33,27 @@ export default class GameManager{
     player_faction: Factions = undefined;
     year          : number = 0;
     credits       : number = 0;
-    land_free     : number = 0;
-    land_occupied : number = 0;
-    land_amount   : number = 0;
+
+    land_bank     :number = 2500;   // How much land is avable in the whole Game
+    land_avaible  : number;         // how much you can buy
+    land_free     : number = 0;     // how much not used Land the player have
+    land_occupied : number = 0;     // how much land of the player is used/occupied
+    land_amount   : number;         // how much land the player have in total
+
     food_amount   : number = 0;
     food_storage  : number = 0;
     citizen       : Citizen[] = [];
     appartments   : number = 0;
 
     // Manager
-    infobar       : InfobarManager;
-    foodManager   : FoodManager;
-    landManager   : LandManager;
-    citizenManager: CitizenManager;
-    FinanceManager: FinanceManager;
-    BuildingManager: BuildingManager;
+    infobar         : InfobarManager;
+    foodManager     : FoodManager;
+    landManager     : LandManager;
+    citizenManager  : CitizenManager;
+    FinanceManager  : FinanceManager;
+    BuildingManager : BuildingManager;
 
-    greenhouse: GreenHouse;
+    greenhouse      : GreenHouse;
 
     versionDisplay  : VersionDisplay;
     
@@ -74,26 +78,45 @@ export default class GameManager{
         this.displayChooseFaction();
     }
 
-    /* 
-    Hier alle nötigen werte für das Spiel intialisieren.
-    */
+    // - - - - - - - - - - NEW YEAR - - - - - - - - - -
+    newYear(): void{
+        console.log(this.citizen)
+        this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
+        this.citizenManager.bornNewCitizen(this.citizen);
+        this.landManager.newYearRoutine();
+        this.food_amount += this.foodManager.harvestProfit();
+        this.land_free += this.foodManager.getCultivatedLand(); 
+
+        if(this.checkGameOver()){
+            this.showGameOver();
+            return
+        } else {
+            this.showReport();
+            this.year++
+            this.updateInfoBarAll();
+            
+        }
+
+
+    }
+
     async initGame(player_faction: Factions){
         this.year = 1;
         this.infobar.setFaction(this.player_faction);
         switch (player_faction) {
             //EU
             case 0:
-                this.credits = 2500;
+                this.credits = 4500;
                 this.food_amount = 5000;
                 this.land_free = 450;
 
-                this.citizenManager.createCitizen(50,this.citizen);
+                this.citizenManager.createCitizen(75,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
                 this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
                 break;
             //ATC
             case 1:
-                this.credits = 3500;
+                this.credits = 9500;
                 this.food_amount = 5000;
                 this.land_free = 450;
 
@@ -103,8 +126,8 @@ export default class GameManager{
                 break;
             //RL
             case 2:
-                this.credits = 2000;
-                this.food_amount = 5000;
+                this.credits = 1500;
+                this.food_amount = 10000;
                 this.land_free = 450;
 
                 this.citizenManager.createCitizen(100,this.citizen);
@@ -137,28 +160,6 @@ export default class GameManager{
         this.citizen = [];
     }
 
-    // - - - - - - - - - - NEW YEAR - - - - - - - - - -
-    newYear(): void{
-        console.log(this.citizen)
-        this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
-        this.citizenManager.bornNewCitizen(this.citizen);
-        this.landManager.newYearRoutine();
-        this.food_amount += this.foodManager.harvestProfit();
-        this.land_free += this.foodManager.getCultivatedLand(); 
-
-        if(this.checkGameOver()){
-            this.showGameOver();
-            return
-        } else {
-            this.showReport();
-            this.year++
-            this.updateInfoBarAll();
-            
-        }
-
-
-    }
-
     checkGameOver(): boolean{
         if(this.citizen.length < 1 || this.credits < -500){
             return(true);
@@ -168,7 +169,7 @@ export default class GameManager{
     updateInfoBarAll(): void{
         this.getFoodStorage();
         this.getAppartments();
-        this.calLandAmount();
+        this.calLand_avaible();
         this.infobar.update({
             credits: this.credits,
             food:{amount: this.food_amount, maximum: this.food_storage},
@@ -177,6 +178,20 @@ export default class GameManager{
             year: this.year,
         })
     }
+
+
+    calLandAmount(): void{
+        this.getOccupiedLand();
+        this.land_amount = 0;
+        this.land_amount = this.land_free + this.land_occupied;
+    }
+    calLand_avaible(): void{
+        this.calLandAmount();
+        this.land_avaible = 0;
+        this.land_avaible = this.land_bank - this.land_amount;
+    }
+
+    // get functions
     getFoodStorage(): void{
         this.food_storage = this.BuildingManager.getFoodStorage();
     }
@@ -186,10 +201,12 @@ export default class GameManager{
     getOccupiedLand(): void{
         this.land_occupied = this.BuildingManager.getLandOccupied();
     }
-    calLandAmount(): void{
-        this.getOccupiedLand();
-        this.land_amount = this.land_free + this.land_occupied;
-    }
+
+
+
+
+
+
 
     // - - - - - - - - - - CHOOSE FACTION MENU - - - - - - - - - -
     /**
@@ -302,7 +319,8 @@ export default class GameManager{
      * Shows the LAND TRADING MENU
      */
      async landTradeMenu(): Promise<void>{
-        await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits \n for now the bank have ${this.landManager.avaible_land} claims to Sell`);
+        this.calLand_avaible();
+        await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits. \n For now the bank have ${this.land_avaible} claims to sell. \n Dont forget that you can only trade land once a year.`);
         let input_land: Input = new Input(['w-100'],'land-trade-amount');
 
         let button_buy: Button = new Button('buy land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
@@ -319,18 +337,21 @@ export default class GameManager{
     }
 
     async buyLand(input: HTMLInputElement){
-        let result = this.landManager.buyLand(parseInt(input.value), this.credits,this.land_free);
+        //debugger;
+        let result = this.landManager.buyLand(parseInt(input.value), this.credits,this.land_free,this.land_avaible);
         if(result.error){
             await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
 
         } else {
-            this.land_amount += result.amount;
+            this.land_free += result.amount;
+            this.land_bank -= result.amount;
             this.credits -= result.cost;
 
+            this.calLandAmount();
             this.infobar.update({
                 credits : this.credits,
                 land    : {
-                    amount  : this.land_amount,
+                    amount  : this.land_free,
                     maximum : this.land_amount
                 }
             })
