@@ -6,6 +6,8 @@ import LandManager from "./GameLogic/LandManager";
 import CitizenManager from "./GameLogic/CitizenManager";
 import BuildingManager from "./GameLogic/BuildingManager";
 
+import { info } from "../utils/game-text";
+
 import Citizen from "../npc/Citizen";
 
 //import { IInfoBarObj } from "../utils/interfaces";
@@ -326,7 +328,7 @@ export default class GameManager{
         await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits. \n For now the bank have ${this.land_avaible} claims to sell. \n Dont forget that you can only trade land once a year.`);
         let input_land: Input = new Input(['w-100'],'land-trade-amount');
 
-        let button_buy: Button = new Button('buy land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
+        let button_buy: Button = new Button('trade land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.tradeMenu());
 
         let col_1: Col = new Col([],[input_land]);
@@ -370,7 +372,7 @@ export default class GameManager{
      async foodTradeMenu(): Promise<void>{
         let input_food: Input = new Input(['w-100'],'food-trade-amount');
 
-        let button_buy: Button = new Button('buy land',['btn', 'btn-primary', 'w-100'],() => {});
+        let button_buy: Button = new Button('trade land',['btn', 'btn-primary', 'w-100'],() => {});
         let button_sell: Button = new Button('sell land',['btn', 'btn-primary', 'w-100'],() => {});
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.tradeMenu());
 
@@ -393,7 +395,7 @@ export default class GameManager{
         this.handler.selectAreaHandler.clearView();
         await this.handler.displayHandler.displayText('Manage food Menu');
 
-        let button_plant: Button = new Button('plant Seeds',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsMenu());
+        let button_plant: Button = new Button('plant Seeds on Land',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsMenu());
         let button_distribute: Button = new Button('distribute food',['btn', 'btn-primary', 'w-100'],() => this.distributeFoodMenu());
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
 
@@ -453,7 +455,11 @@ export default class GameManager{
      * Shows the DISTRIBUTE FOOD MENU
      */
     async distributeFoodMenu(): Promise<void>{
-        await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+` Food planed for this Year\n your citizens need ${this.citizenManager.getCitizenHungerSum(this.citizen)} food for this year.`);
+        let info_message: string = "";
+        if((this.citizenManager.getCitizensSaturationAve(this.citizen)) <= 1){
+            info_message = info.distribut_food.citizens_hungry;
+        }
+        await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+` Food planed for this Year\n your need ${this.citizenManager.getCitizenHungerSum(this.citizen)} food to get all citizens saturated, \n you can add more or less.`+`\n ${info_message}`);
 
         let input_food: Input = new Input(['w-100'],'distribute-food-amount');
 
