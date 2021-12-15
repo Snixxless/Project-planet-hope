@@ -80,7 +80,6 @@ export default class GameManager{
 
     // - - - - - - - - - - NEW YEAR - - - - - - - - - -
     newYear(): void{
-        console.log(this.citizen)
         this.citizenManager.newYearRoutine(this.citizen,this.foodManager.distributed_food);
         this.citizenManager.bornNewCitizen(this.citizen);
 
@@ -101,6 +100,7 @@ export default class GameManager{
             this.year++;
             this.updateInfoBarAll(); 
         }
+        console.log(this.citizen);
     }
 
     updateInfoBarAll(): void{
@@ -129,10 +129,13 @@ export default class GameManager{
                 this.food_amount = 5000;
                 this.land_amount = 100;
 
+                //make "adults"
+                this.citizenManager.createCitizen(50,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 5, 30);
+                //make kids 
+                this.citizenManager.createCitizen(25,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 4, 14);
 
-                this.citizenManager.createCitizen(75,this.citizen);
-                this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
-                this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
                 break;
             //ATC
             case 1:
@@ -140,10 +143,13 @@ export default class GameManager{
                 this.food_amount = 5000;
                 this.land_amount = 100;
 
-
+                //make "adults"
                 this.citizenManager.createCitizen(50,this.citizen);
-                this.citizenManager.makeAllOldRandom(this.citizen, 18, 65); //TODO for testing
-                this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
+                this.citizenManager.makeAllOldRandom(this.citizen, 10, 25);
+                //make kids 
+                this.citizenManager.createCitizen(25,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 4, 14);
+
                 break;
             //RL
             case 2:
@@ -151,15 +157,21 @@ export default class GameManager{
                 this.food_amount = 10000;
                 this.land_amount = 100;
 
-                this.citizenManager.createCitizen(100,this.citizen);
-                this.citizenManager.makeAllOldRandom(this.citizen, 18, 40); //TODO for testing
-                this.citizenManager.makeAllHappy(this.citizen, Math.floor((Math.random() * 80) +20)); //TODO for testing
+                //make "adults"
+                this.citizenManager.createCitizen(80,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 5, 30);
+                //make kids 
+                this.citizenManager.createCitizen(25,this.citizen);
+                this.citizenManager.makeAllOldRandom(this.citizen, 4, 14);
+
                 break;
             default:
                 break;
         }
         //.this.citizenManager.refreshStats(this.citizen);
         //console.log(this.citizen);
+
+        this.citizenManager.makeAllHappy(this.citizen,55)
 
         this.citizenManager.checkDeath(this.citizen); // check if some citizens died during the journey 
         this.citizenManager.refreshStats(this.citizen);
@@ -313,7 +325,9 @@ export default class GameManager{
      */
     async tradeMenu(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('Trade Menu');
+        await this.handler.displayHandler.displayText(
+            `Trade Menu`
+        );
 
         let button_land: Button = new Button('trade land',['btn', 'btn-primary', 'w-100'],() => this.landTradeMenu());
         let button_food: Button = new Button('trade food',['btn', 'btn-primary', 'w-100'],() => this.foodTradeMenu(), true);
@@ -333,8 +347,18 @@ export default class GameManager{
      * Shows the LAND TRADING MENU
      */
      async landTradeMenu(): Promise<void>{
+        let info_message: string = "";
         this.calLand_avaible();
-        await this.handler.displayHandler.displayText('The Price for 1 claim of Land cost '+this.landManager.price_per_land+` credits. \n For now the bank have ${this.land_avaible} claims to sell. \n Dont forget that you can only trade land once a year.`);
+        if(this.landManager.landtrade_done){
+            info_message = info.buy_land.trade_done;
+        } else {
+            info_message = info.buy_land.trade_possible;
+        }
+        await this.handler.displayHandler.displayText(
+            `The Price for 1 claim of Land cost ${this.landManager.price_per_land} credits this year.
+             For now the bank have ${this.land_avaible} claims to sell.
+             \n ${info_message}`
+             );
         let input_land: Input = new Input(['w-100'],'land-trade-amount');
 
         let button_buy: Button = new Button('trade land',['btn', 'btn-primary', 'w-100'],async () => this.buyLand(input_land.element));
@@ -400,7 +424,9 @@ export default class GameManager{
      */
      async manageFoodMenu(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('Manage food Menu');
+        await this.handler.displayHandler.displayText(
+            `Manage food Menu`
+        );
 
         let button_plant: Button = new Button('plant Seeds on Land',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsMenu());
         let button_distribute: Button = new Button('distribute food',['btn', 'btn-primary', 'w-100'],() => this.distributeFoodMenu());
@@ -420,11 +446,14 @@ export default class GameManager{
      * Shows the PLANT SEEDS MENU
      */
     async plantSeedsMenu(): Promise<void> {
-        await this.handler.displayHandler.displayText( this.foodManager.cultivated_land +` fields are planed to cultivate this year \nTo cultivate one Field you need ${this.foodManager.needed_citizens_for_land} Citizen and ${this.foodManager.need_seeds_for_land} food \n `);
+        await this.handler.displayHandler.displayText(
+            `${this.foodManager.cultivated_land} fields are planed to cultivate this year 
+            to cultivate one field you need ${this.foodManager.needed_citizens_for_land} citizen and ${this.foodManager.need_seeds_for_land} food`
+        );
 
         let input_seeds: Input = new Input(['w-100'],'plant-seed-amount');
 
-        let button_field_add: Button = new Button('add planned seeding',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsLand(input_seeds.element));
+        let button_field_add: Button = new Button('add intended seeding for fields',['btn', 'btn-primary', 'w-100'],() => this.plantSeedsLand(input_seeds.element));
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.manageFoodMenu());
 
         let col_1: Col = new Col([],[input_seeds]);
@@ -441,7 +470,9 @@ export default class GameManager{
     async plantSeedsLand(input: HTMLInputElement){
         let result = this.foodManager.setCultivatedLand(parseInt(input.value), this.land_free, this.food_amount, this.citizen);
         if(result.error){
-            await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
+            await this.handler.displayHandler.displayText(
+                `I'm sorry commander, but ${result.error_message}`
+            );
         } else {
             this.food_amount -= result.cost;
             this.land_free -= result.amount;
@@ -466,11 +497,16 @@ export default class GameManager{
         if((this.citizenManager.getCitizensSaturationAve(this.citizen)) <= 1){
             info_message = info.distribut_food.citizens_hungry;
         }
-        await this.handler.displayHandler.displayText('You have '+ this.foodManager.distributed_food+` Food planed for this Year\n your need ${this.citizenManager.getCitizenHungerSum(this.citizen)} food to get all citizens saturated, \n you can add more or less.`+`\n ${info_message}`);
+        await this.handler.displayHandler.displayText(
+            `You have ${this.foodManager.distributed_food} food planed for this Year
+             your need ${this.citizenManager.getCitizenHungerSum(this.citizen)} food to get all citizens saturated, 
+             you can add more or less.
+             \n ${info_message}`
+        );
 
         let input_food: Input = new Input(['w-100'],'distribute-food-amount');
 
-        let button_distribute_add: Button = new Button('add food planned for distribute',['btn', 'btn-primary', 'w-100'],async () => this.distributFood(input_food.element));
+        let button_distribute_add: Button = new Button('add food planned to distribute',['btn', 'btn-primary', 'w-100'],async () => this.distributFood(input_food.element));
         //let button_distribute_reduce: Button = new Button('reduce food planned for distribute',['btn', 'btn-primary', 'w-100'],async() => this.distributFood(input_food.element));
         let button_back: Button = new Button('back',['btn', 'btn-primary', 'w-100'],() => this.manageFoodMenu());
 
@@ -488,7 +524,9 @@ export default class GameManager{
     async distributFood(input: HTMLInputElement){
         let result = this.foodManager.setDistributFood(parseInt(input.value), this.food_amount);
         if(result.error){
-            await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
+            await this.handler.displayHandler.displayText(
+                `I'm sorry commander, but ${result.error_message}`
+            );
         } else {
             this.food_amount -= result.amount;
 
@@ -512,9 +550,10 @@ export default class GameManager{
             while the expanses are -${Math.floor(this.FinanceManager.credits_expenses)} C
             \n that makes a revenue of ${Math.floor(this.FinanceManager.credits_balance)} Credits
             \n we made ${this.foodManager.food_profit_this_year} food
-            \n ${this.citizenManager.citizen_dead_this_year} citizens died last year, and ${this.citizenManager.citizen_new_this_year} have been born
-            `)
+            \n ${this.citizenManager.citizen_dead_this_year} citizens died last year, and ${this.citizenManager.citizen_new_this_year} have been born`
+        );
 
+        
         let button_land: Button = new Button('Understood',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
         let button_food: Button = new Button('Help me',['btn', 'btn-primary', 'w-100'],() => this.mainMenu());
 
@@ -529,9 +568,13 @@ export default class GameManager{
     // - - - - - - - - - - GAME OVER MENU - - - - - - - - - -
     async showGameOver(): Promise<void>{
         this.handler.selectAreaHandler.clearView();
-        await this.handler.displayHandler.displayText('Seems your Colony is lost Commander, it have been ' + (this.year)+' wonderfull years with you as our leader');
+        await this.handler.displayHandler.displayText(
+            `Seems your Colony is lost Commander, 
+            it have been ${this.year} wonderfull years with you as our leader`
+            );
+        
 
-        let button_highscore: Button = new Button('View Highscore',['btn', 'btn-primary', 'w-100'],() => this.showHighScore());
+        let button_highscore: Button = new Button('View Highscore',['btn', 'btn-primary', 'w-100'],() => this.showHighScore(), true);
         let button_newGame: Button = new Button('New Game',['btn', 'btn-primary', 'w-100'],() => this.displayChooseFaction());
 
         let col_1: Col = new Col([],[button_highscore]);

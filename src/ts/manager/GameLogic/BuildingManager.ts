@@ -3,9 +3,9 @@ import Building from "./buildings/Building";
 export default class BuildingManager{
 
 buildings_maintenance: number;
-buildings_land_occupied: number = 50;
+buildings_land_occupied: number = 0;
 
-appartments: number = 100;
+appartments: number = 0;
 food_storage: number = 0;
 
 buildings : Building;

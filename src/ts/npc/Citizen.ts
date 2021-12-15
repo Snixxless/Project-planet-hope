@@ -11,7 +11,7 @@ export default class Citizen{
     life_stage      : LifeStage = 0;   // 0-2 | 0 = kid, 1 = adult, 2 = grandpa
 
     depression      : number = 0;   // 0-100
-    happiness       : Happiness = 55;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
+    happiness       : Happiness = 0;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
     happiness_state : number = 0;   // 0 verry unhappy, 1 unhappy, 2 normal, 3 happy, 4 verry happy
     isHorny         : boolean = false; // if true, they can have bunga time and make new Workpower, ehmmm i mean citizens.
 

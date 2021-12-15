@@ -20,14 +20,27 @@ export default class FoodManager {
 
   distributed_food: number = 0;
 
-  constructor() { }
-
-  newYearRoutine() {
-
+  constructor() { 
+    this.randomLandProfitRate();
+  }
+  
+  newYearRoutine():number {
+    let profit: number = 0;
+    profit += this.harvestProfit();
+    this.randomLandProfitRate();
     this.distributed_food = 0;
+    return profit;
    }
   
   // - - - - - - - - - -    Plant Seeds - - - - - - - - - -
+  /**
+   * 
+   * @param amount the input value
+   * @param land_free how much free land the player have
+   * @param food how much food the play have
+   * @param citizens array of citizens
+   * @returns give a amount and cost back OR a error message
+   */
   setCultivatedLand(
     amount: number,
     land_free: number,
@@ -36,8 +49,6 @@ export default class FoodManager {
   ): any {
     let citizens_amount = citizens.length;
     let error_message: seedsOnLandErrors;
-
-    //debugger;
 
     if (amount !== undefined || amount !== null) {
       if (this.cultivated_land + amount > 0) {
@@ -65,7 +76,6 @@ export default class FoodManager {
         error_message = seedsOnLandErrors.negative;
       }
     }
-
     return {
       amount: 0,
       cost: 0,
@@ -74,6 +84,12 @@ export default class FoodManager {
     };
   }
 
+  /**
+   * changes the error message based on the input
+   * is connected to the "setCultivatedLand" function
+   * @param error_message value of what error message should return
+   * @returns gives the error message back
+   */
   seedsOnLandErrorHandler(error_message: seedsOnLandErrors): string {
     switch (error_message) {
       case seedsOnLandErrors.no_food:
@@ -94,36 +110,13 @@ export default class FoodManager {
     }
   }
 
-  // - - - - - - - - - - FOOD INCOME - - - - - - - - - -
-  diceLandProfitRate(): void {
-    this.food_profit_rate = 0;
-    this.food_profit_rate = Math.floor(
-      Math.random() * this.profit_range + this.base_profit_min
-    );
-  }
-  calLandProfit(): void {
-    this.cultivated_land_profit = 0;
-    this.cultivated_land_profit = this.cultivated_land * this.food_profit_rate;
-  }
-
-  harvestProfit(): number {
-    this.diceLandProfitRate();
-    this.calLandProfit();
-    let profit =
-      this.cultivated_land_profit + this.cultivated_greenhouse_profit;
-    this.food_profit_this_year = profit;
-    console.table({
-      food_profit_rate: this.food_profit_rate,
-      planted_land_profit: this.cultivated_land_profit,
-      planted_greenhouse_profit: this.cultivated_greenhouse_profit,
-      profit: profit,
-    });
-    this.cultivated_land = 0;
-    this.cultivated_greenhouse = 0;
-    return profit;
-  }
-
   // - - - - - - - - - - FOOD DISTRIBUTE - - - - - - - - - -
+  /**
+   *  changes the amout of foot the play wat to distribute
+   * @param amount the input value
+   * @param food how much food the play have
+   * @returns give a amount and cost back OR a error message
+   */
   setDistributFood(amount: number, food: number): any {
     let error_message: DistributeFoodError;
 
@@ -151,6 +144,12 @@ export default class FoodManager {
     };
   }
 
+  /**
+   * changes the error message based on the input
+   * is connected to the "setDistributFood" function
+   * @param error_message value of what error message should return
+   * @returns gives the error message back
+   */
   distributFoodErrorHandler(error_message: DistributeFoodError): string {
     switch (error_message) {
       case DistributeFoodError.no_food:
@@ -166,13 +165,48 @@ export default class FoodManager {
     }
   }
 
-  resetDistributedFood() {
-    this.distributed_food = 0;
+  // - - - - - - - - - - FOOD INCOME - - - - - - - - - -
+  /**
+   * calculate all var and then calculate the food income
+   * @returns how much food the player made
+   */
+  harvestProfit(): number {
+    this.calLandProfit();
+    let profit =
+      this.cultivated_land_profit + this.cultivated_greenhouse_profit;
+    this.food_profit_this_year = profit;
+    /*console.table({
+      food_profit_rate: this.food_profit_rate,
+      planted_land_profit: this.cultivated_land_profit,
+      planted_greenhouse_profit: this.cultivated_greenhouse_profit,
+      profit: profit,
+    }); */
+    this.cultivated_land = 0;
+    this.cultivated_greenhouse = 0;
+    return profit;
   }
 
-  // get stuff
 
+  // - - - - - - - - - - RANDOM FUNCTIONS - - - - - - - - - -  
+  randomLandProfitRate(): void {
+    this.food_profit_rate = 0;
+    this.food_profit_rate = Math.floor(
+      Math.random() * this.profit_range + this.base_profit_min
+    );
+  }
+    // - - - - - - - - - - CALCULATE FUNCTIONS - - - - - - - - - -  
+  calLandProfit(): void {
+    this.cultivated_land_profit = 0;
+    this.cultivated_land_profit = this.getCultivatedLand() * this.food_profit_rate;
+  }
+
+  // - - - - - - - - - - GET | SEND THE VALUE BACK - - - - - - - - - -  
   getCultivatedLand(): number {
     return this.cultivated_land;
+  }
+  
+  // - - - - - - - - - - RESET FUNCTIONS - - - - - - - - - -  
+  resetDistributedFood() {
+    this.distributed_food = 0;
   }
 }

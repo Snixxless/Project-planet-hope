@@ -43,8 +43,7 @@ export default class CitizenManager {
 
     this.checkDepression(citizens);
     this.calSumDepression(citizens);
-    console.log(this.citizen_depression_sum);
-    console.log(this.citizen_depression_ave);
+
     this.checkDeath(citizens);
 
     this.makeAllOld(citizens, 1);
@@ -373,7 +372,7 @@ export default class CitizenManager {
     });
   }
 
-  // - - - - - - - - - - Send the value back - - - - - - - - - -
+  // - - - - - - - - - -  GET | SEND THE VALUE BACK - - - - - - - - - -
   getCitizenPopulation(): number {
     return this.population;
   }

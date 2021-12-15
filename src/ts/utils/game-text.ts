@@ -16,7 +16,7 @@ let globals = {
     },
     greeting:[
         `greetings sir`,        //0
-        `Hello president`,      //1
+        `Hello Mr. president`,      //1
         `zdrastuy comrade`     //2
     ]
 }
@@ -46,6 +46,10 @@ let factions = {
 let info = {
     distribut_food:{
         citizens_hungry: "your citizens seem hungry, you shoud give them more then they need"
+    },
+    buy_land:{
+        trade_possible: "Dont forget that you can only trade land once a year.",
+        trade_done: "Your purchase has been sent to the bank"
     }
 }
 
