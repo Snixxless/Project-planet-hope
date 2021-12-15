@@ -11,14 +11,12 @@ export default class Citizen{
     life_stage      : LifeStage = 0;   // 0-2 | 0 = kid, 1 = adult, 2 = grandpa
 
     depression      : number = 0;   // 0-100
-    happiness       : Happiness = 0;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
+    happiness       : Happiness = 55;   // 0-100;  // 0-100 | 0-19 = verry unhappy , 20-39 = unhappy , 40-59 normal , 60-79 = happy , 80-100 verry happy
     happiness_state : number = 0;   // 0 verry unhappy, 1 unhappy, 2 normal, 3 happy, 4 verry happy
     isHorny         : boolean = false; // if true, they can have bunga time and make new Workpower, ehmmm i mean citizens.
 
-
     hunger          : number = 15;  // 5-25 how much the citizen will eat
     saturation      : Saturation = 2;   // 0 verry hungry, 1 hungry, 2 normal ,3 saturated, 4 verry saturated
-
     
     mortality_rate  : number = 0.05;// it is what it says, verry brutal. RICE RICE RICE
     

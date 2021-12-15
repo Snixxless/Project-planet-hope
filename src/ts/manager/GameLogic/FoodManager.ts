@@ -23,6 +23,7 @@ export default class FoodManager {
   constructor() { }
 
   newYearRoutine() {
+
     this.distributed_food = 0;
    }
   
@@ -171,7 +172,7 @@ export default class FoodManager {
 
   // get stuff
 
-  getCultivatedLand() {
+  getCultivatedLand(): number {
     return this.cultivated_land;
   }
 }

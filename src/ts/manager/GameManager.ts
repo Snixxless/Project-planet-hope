@@ -36,11 +36,12 @@ export default class GameManager{
     year          : number = 0;
     credits       : number = 0;
 
-    land_bank     :number = 2500;   // How much land is avable in the whole Game
+    land_bank     : number = 2500;   // How much land is avable in the whole Game
     land_avaible  : number;         // how much you can buy
+
     land_free     : number = 0;     // how much not used Land the player have
     land_occupied : number = 0;     // how much land of the player is used/occupied
-    land_amount   : number;         // how much land the player have in total
+    land_amount   : number = 0;     // how much land the player have in total
 
     food_amount   : number = 0;
     food_storage  : number = 0;
@@ -74,7 +75,6 @@ export default class GameManager{
 
         this.versionDisplay             = new VersionDisplay("0.1.6")
 
-        //this.displayChooseFaction();
         this.displayChooseFaction();
     }
 
@@ -98,12 +98,25 @@ export default class GameManager{
             return
         } else {
             this.showReport();
-            this.year++
-            this.updateInfoBarAll();
-            
+            this.year++;
+            this.updateInfoBarAll(); 
         }
+    }
 
+    updateInfoBarAll(): void{
 
+        //only placeholders
+        this.food_storage = this.BuildingManager.getFoodStorage();
+        this.appartments = this.BuildingManager.getAppartments();
+
+        this.calLandFree();
+        this.infobar.update({
+            credits: this.credits,
+            food:{amount: this.food_amount, maximum: this.food_storage},
+            land:{amount: this.land_free, maximum: this.land_amount},
+            citizen:{amount: this.citizenManager.population,maximum: this.appartments},
+            year: this.year,
+        })
     }
 
     async initGame(player_faction: Factions){
@@ -114,7 +127,8 @@ export default class GameManager{
             case 0:
                 this.credits = 4500;
                 this.food_amount = 5000;
-                this.land_free = 100;
+                this.land_amount = 100;
+
 
                 this.citizenManager.createCitizen(75,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 30); //TODO for testing
@@ -124,7 +138,8 @@ export default class GameManager{
             case 1:
                 this.credits = 9500;
                 this.food_amount = 5000;
-                this.land_free = 100;
+                this.land_amount = 100;
+
 
                 this.citizenManager.createCitizen(50,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 65); //TODO for testing
@@ -134,7 +149,7 @@ export default class GameManager{
             case 2:
                 this.credits = 1500;
                 this.food_amount = 10000;
-                this.land_free = 100;
+                this.land_amount = 100;
 
                 this.citizenManager.createCitizen(100,this.citizen);
                 this.citizenManager.makeAllOldRandom(this.citizen, 18, 40); //TODO for testing
@@ -174,27 +189,21 @@ export default class GameManager{
         }
     }
 
-    updateInfoBarAll(): void{
-        this.getFoodStorage();
-        this.getAppartments();
-        this.calLand_avaible();
-        this.infobar.update({
-            credits: this.credits,
-            food:{amount: this.food_amount, maximum: this.food_storage},
-            land:{amount: this.land_free, maximum: this.land_amount},
-            citizen:{amount: this.citizenManager.population,maximum: this.appartments},
-            year: this.year,
-        })
+
+
+    calLandOccupied(): void{
+        this.land_occupied = 0;
+        this.land_occupied = this.BuildingManager.getLandOccupied() + this.foodManager.getCultivatedLand();
+    }
+    calLandFree(): void{
+        this.calLandOccupied();
+        this.land_free = 0;
+        this.land_free = this.land_amount - this.land_occupied
     }
 
 
-    calLandAmount(): void{
-        this.getOccupiedLand();
-        this.land_amount = 0;
-        this.land_amount = this.land_free + this.land_occupied;
-    }
+    // for the bank
     calLand_avaible(): void{
-        this.calLandAmount();
         this.land_avaible = 0;
         this.land_avaible = this.land_bank - this.land_amount;
     }
@@ -205,9 +214,6 @@ export default class GameManager{
     }
     getAppartments(){
         this.appartments = this.BuildingManager.getAppartments();
-    }
-    getOccupiedLand(): void{
-        this.land_occupied = this.BuildingManager.getLandOccupied();
     }
 
 
@@ -345,17 +351,15 @@ export default class GameManager{
     }
 
     async buyLand(input: HTMLInputElement){
-        //debugger;
         let result = this.landManager.buyLand(parseInt(input.value), this.credits,this.land_free,this.land_avaible);
         if(result.error){
             await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
-
         } else {
-            this.land_free += result.amount;
+            this.land_amount += result.amount;
             this.land_bank -= result.amount;
             this.credits -= result.cost;
 
-            this.calLandAmount();
+            this.calLandFree();
             this.infobar.update({
                 credits : this.credits,
                 land    : {
@@ -416,7 +420,7 @@ export default class GameManager{
      * Shows the PLANT SEEDS MENU
      */
     async plantSeedsMenu(): Promise<void> {
-        await this.handler.displayHandler.displayText(`To cultivate one Field you need ${this.foodManager.needed_citizens_for_land} Citizen and ${this.foodManager.need_seeds_for_land} food \n \nYou have `+ this.foodManager.cultivated_land +` seeds planed for this Year`);
+        await this.handler.displayHandler.displayText( this.foodManager.cultivated_land +` fields are planed to cultivate this year \nTo cultivate one Field you need ${this.foodManager.needed_citizens_for_land} Citizen and ${this.foodManager.need_seeds_for_land} food \n `);
 
         let input_seeds: Input = new Input(['w-100'],'plant-seed-amount');
 
@@ -440,8 +444,7 @@ export default class GameManager{
             await this.handler.displayHandler.displayText(`I'm sorry commander, but ${result.error_message}`);
         } else {
             this.food_amount -= result.cost;
-            this.land_free -=  result.amount;
-
+            this.land_free -= result.amount;
             this.infobar.update({
                 food:{
                     amount: this.food_amount,
@@ -451,6 +454,7 @@ export default class GameManager{
 
             this.plantSeedsMenu();
         }
+        this.updateInfoBarAll();
     }
 
     // - - - - - - - - - - DISTRIBUTE FOOD MENU - - - - - - - - - -
@@ -504,8 +508,9 @@ export default class GameManager{
         this.handler.selectAreaHandler.clearView();
         await this.handler.displayHandler.displayText(
             `This is the Report for Year ${this.year}
-            \n our colony makes a income of ${this.FinanceManager.credits_income} while the expanses are ${this.FinanceManager.credits_expenses}
-            \n that makes a revenue of ${this.FinanceManager.credits_balance} Credits
+            \n our colony makes a income of ${Math.floor(this.FinanceManager.credits_income)} C 
+            while the expanses are -${Math.floor(this.FinanceManager.credits_expenses)} C
+            \n that makes a revenue of ${Math.floor(this.FinanceManager.credits_balance)} Credits
             \n we made ${this.foodManager.food_profit_this_year} food
             \n ${this.citizenManager.citizen_dead_this_year} citizens died last year, and ${this.citizenManager.citizen_new_this_year} have been born
             `)
