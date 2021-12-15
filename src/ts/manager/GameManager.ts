@@ -420,7 +420,7 @@ export default class GameManager{
      * Shows the PLANT SEEDS MENU
      */
     async plantSeedsMenu(): Promise<void> {
-        await this.handler.displayHandler.displayText(`To cultivate one Field you need ${this.foodManager.needed_citizens_for_land} Citizen and ${this.foodManager.need_seeds_for_land} food \n \nYou have `+ this.foodManager.cultivated_land +` seeds planed for this Year`);
+        await this.handler.displayHandler.displayText( this.foodManager.cultivated_land +` fields are planed to cultivate this year \nTo cultivate one Field you need ${this.foodManager.needed_citizens_for_land} Citizen and ${this.foodManager.need_seeds_for_land} food \n `);
 
         let input_seeds: Input = new Input(['w-100'],'plant-seed-amount');
 
@@ -508,8 +508,9 @@ export default class GameManager{
         this.handler.selectAreaHandler.clearView();
         await this.handler.displayHandler.displayText(
             `This is the Report for Year ${this.year}
-            \n our colony makes a income of ${this.FinanceManager.credits_income} while the expanses are ${this.FinanceManager.credits_expenses}
-            \n that makes a revenue of ${this.FinanceManager.credits_balance} Credits
+            \n our colony makes a income of ${Math.floor(this.FinanceManager.credits_income)} C 
+            while the expanses are -${Math.floor(this.FinanceManager.credits_expenses)} C
+            \n that makes a revenue of ${Math.floor(this.FinanceManager.credits_balance)} Credits
             \n we made ${this.foodManager.food_profit_this_year} food
             \n ${this.citizenManager.citizen_dead_this_year} citizens died last year, and ${this.citizenManager.citizen_new_this_year} have been born
             `)
